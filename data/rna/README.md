@@ -1,5 +1,5 @@
 # About the DATA
-
+***
 train.txt and dev.txt contain the data as training set and validation set.   
 train.txt contains 4,750 data points; dev.txt contains 250 data points.  
 Each data point has four parts:  
@@ -15,7 +15,7 @@ It contains 444 data points; each data point has three parts:
 * LinearFold predicted structure.
 
 # 关于数据
-
+***
 train.txt和dev.txt包含作为训练集和验证集的数据。  
 train.txt包含4,750个数据； dev.txt包含250个数据。  
 每个数据点包含四个部分：  
