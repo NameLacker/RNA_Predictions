@@ -1,6 +1,14 @@
+"""
+测试
+"""
 import paddle
 import paddle.fluid as fluid
 
-word_dict = paddle.dataset.imdb.word_dict()
+from utils.reader import *
 
-print(word_dict)
+traindata = train_reader()
+for rna, label, score in traindata:
+    print(rna)
+    print(label)
+    print(score)
+    break
