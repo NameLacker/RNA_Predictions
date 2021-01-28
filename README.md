@@ -4,6 +4,10 @@
 革命尚未成功，同志仍需努力。  
 加油，奥利给！！！
 
-# 模型
+## 项目所需依赖库
+***
+运行`pip install -r requestments -i https://pypi.douban.com/simple`下载安装所需依赖  
+
+## 模型
 ***
 主要结构采用bidirectional-LSTM（双向LSTM网络结构），and so on......  
