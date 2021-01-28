@@ -6,7 +6,13 @@
 
 ## 项目所需依赖库
 ***
-运行`pip install -r requestments -i https://pypi.douban.com/simple`下载安装所需依赖  
+运行`pip install -r requestments -i https://pypi.douban.com/simple`下载安装所需依赖
+
+## 测试项目  
+***
+运行`python train.py`开始训练，训练结果参数会保存在`./inference_model`目录下  
+运行`visualdl --logdir ./log post 8040`，再在浏览器打开`http://localhost:8040/`可以查看训练进度  
+运行`python test.py`测试训练结果，此测试是针对影评的情感分类，共两个分类--积极和消极  
 
 ## 模型
 ***
