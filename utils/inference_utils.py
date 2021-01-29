@@ -26,13 +26,23 @@ def train_program(prediction):
     :param prediction:
     :return:
     """
-    label = fluid.layers.data(name="score", shape=[1], dtype="int64")
-    length = fluid.layers.data(name="length", shape=[1], dtype="int64")
-    # cost = fluid.layers.cross_entropy(input=prediction, label=label)
-    cost = fluid.layers.dice_loss(prediction, label)
-    avg_cost = fluid.layers.mean(cost)
+    label = fluid.layers.data(name="score", shape=[500], dtype="float64")
+    avg_cost = cost_function(prediction, label)
     # accuracy = fluid.layers.accuracy(input=prediction, label=label)
     return [avg_cost]  # 返回平均cost和acc
+
+
+def cost_function(prediction, label):
+    """
+    自定义交叉熵损失函数
+    :param prediction:
+    :param label:
+    :return:
+    """
+    sub = fluid.layers.elementwise_sub(prediction, label)
+    cost = fluid.layers.square(sub)
+    avg_cost = fluid.layers.mean(cost)
+    return avg_cost
 
 
 def optimizer_func():
@@ -43,4 +53,4 @@ def optimizer_func():
     boundaries = [step * 200 for step in collocations.boundaries]
     values = [value * collocations.learn_rate for value in collocations.values]
     learn_rate = fluid.layers.piecewise_decay(boundaries, values)
-    return fluid.optimizer.Adagrad(learning_rate=learn_rate), learn_rate
+    return fluid.optimizer.RMSPropOptimizer(learning_rate=learn_rate), learn_rate

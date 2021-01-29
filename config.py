@@ -24,12 +24,12 @@ class Config:
 class RNA_Config:
     def __init__(self):
         self.stacked_num = 9  # LSTM双向栈的层数
-        self.batch_size = 10  # 批大小
+        self.batch_size = 1  # 批大小
         self.epochs = 50  # 一共训练多少个轮次
-        self.use_gpu = False  # 是否使用gpu
+        self.use_gpu = True  # 是否使用gpu
         self.continue_train = False  # 是否加载前一次训练参数
 
-        self.max_size = 500  # 输入数据统一尺寸
+        self.max_size = 20  # 输入数据统一尺寸
         self.class_dim = 500  # 输出尺寸
         self.emb_dim = 128  # 词向量的维度
         self.hid_dim = 512  # 隐藏层的维度
