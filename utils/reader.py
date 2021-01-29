@@ -36,15 +36,20 @@ def train_reader():
                 score.append(eval(line.replace("\n", "").split()[1]))  # 各个位置未配对概率
         except Exception as e:
             pass
-    train_data = zip(rnas, labels, scores)
+    train_datas = zip(rnas, labels, scores)
 
     def reader():
-        for rna, label, score in train_data:
-            rna = np.array([collocations.input[base] for base in rna])  # 字符映射 A->0, U->1, C->2, G->3
-            label = np.array([collocations.label[structure] for structure in label])  # 字符映射 '('->0, ')'->1, '.'->2
-            score = np.array(score)
-            yield rna, label, score
-    return reader()
+        for rna, label, score in train_datas:
+            size = len(rna)
+            null = [0 for i in range(500 - size)]
+            rna = np.concatenate((np.array([collocations.input[base] for base in rna]), null),
+                                 axis=0)  # 字符映射 A->1, U->2, C->3, G->4
+            label = np.concatenate((np.array([collocations.label[structure] for structure in label]), null),
+                                   axis=0)  # 字符映射 '('->1, ')'->2, '.'->3
+            rna = np.concatenate((rna, label), axis=0)
+            score = np.concatenate((np.array(score), null), axis=0)
+            yield rna, score
+    return reader
 
 
 def val_reader():

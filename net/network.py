@@ -1,37 +1,12 @@
 from __future__ import print_function
 import paddle.fluid as fluid
 
+from config import RNA_Config
 
-def convlution_net(data, input_dim, class_dim, emb_dim, hid_dim):
-    """
-    文本卷积神经网络
-    :param data:
-    :param input_dim:
-    :param class_dim:
-    :param emb_dim:
-    :param hid_dim:
-    :return:
-    """
-    emb = fluid.layers.embedding(
-        input=data, size=[input_dim, emb_dim], is_sparse=True)
-    conv_3 = fluid.nets.sequence_conv_pool(
-        input=emb,
-        num_filters=hid_dim,
-        filter_size=3,
-        act="tanh",
-        pool_type="sqrt")
-    conv_4 = fluid.nets.sequence_conv_pool(
-        input=emb,
-        num_filters=hid_dim,
-        filter_size=4,
-        act="tanh",
-        pool_type="sqrt")
-    prediction = fluid.layers.fc(
-        input=[conv_3, conv_4], size=class_dim, act="softmax")
-    return prediction
+paramerts = RNA_Config()
 
 
-def stacked_lstm_net(data, input_dim, class_dim, emb_dim, hid_dim, stacked_num):
+def stacked_lstm_net(data):
     """
     栈式双向LSTM
     :param data:
@@ -42,6 +17,11 @@ def stacked_lstm_net(data, input_dim, class_dim, emb_dim, hid_dim, stacked_num):
     :param stacked_num:
     :return:
     """
+    stacked_num = paramerts.stacked_num
+    input_dim = paramerts.max_size
+    emb_dim = paramerts.emb_dim
+    hid_dim = paramerts.hid_dim
+    class_dim = paramerts.class_dim
     assert stacked_num % 2 == 1
     # 计算词向量
     emb = fluid.layers.embedding(
