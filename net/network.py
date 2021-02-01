@@ -6,15 +6,11 @@ from config import RNA_Config
 paramerts = RNA_Config()
 
 
-def stacked_lstm_net(data):
+def stacked_lstm_net(rna, label):
     """
-    栈式双向LSTM
-    :param data:
-    :param input_dim:
-    :param class_dim:
-    :param emb_dim:
-    :param hid_dim:
-    :param stacked_num:
+    栈式双向LSTM结构
+    :param rna:
+    :param label:
     :return:
     """
     stacked_num = paramerts.stacked_num
@@ -24,12 +20,17 @@ def stacked_lstm_net(data):
     class_dim = paramerts.class_dim
     assert stacked_num % 2 == 1
     # 计算词向量
-    emb = fluid.layers.embedding(
-        input=data, size=[input_dim, emb_dim], is_sparse=True)
-
+    emb_rna = fluid.layers.embedding(
+        input=rna, size=[input_dim, emb_dim], is_sparse=True)
+    emb_label = fluid.layers.embedding(
+        input=label, size=[input_dim, emb_dim], is_sparse=True
+    )
     # 第一层栈
     # 全连接层
-    fc1 = fluid.layers.fc(input=emb, size=hid_dim)
+    fc1_rna = fluid.layers.fc(input=emb_rna, size=hid_dim)
+    fc1_label = fluid.layers.fc(input=emb_label, size=hid_dim)
+    fc1 = fluid.layers.concat([fc1_rna, fc1_label], axis=1)
+    fc1 = fluid.layers.fc(input=fc1, size=hid_dim)
     # lstm层
     lstm1, cell1 = fluid.layers.dynamic_lstm(input=fc1, size=hid_dim)
 

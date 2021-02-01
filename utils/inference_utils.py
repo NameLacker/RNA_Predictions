@@ -11,12 +11,13 @@ def inference_program():
     :param word_list:
     :return:
     """
-    data = fluid.layers.data(name="rna", shape=[1], dtype="int64", lod_level=1)
+    rna = fluid.layers.data(name="rna", shape=[1], dtype="int64", lod_level=1)
+    label = fluid.layers.data(name="label", shape=[1], dtype="int64", lod_level=1)
 
     # net = convlution_net(data, dict_dim,
     #                      collocations.class_dim,
     #                      collocations.emb_dim, collocations.hid_dim)
-    net = stacked_lstm_net(data)
+    net = stacked_lstm_net(rna, label)
     return net
 
 
@@ -29,7 +30,7 @@ def train_program(prediction):
     label = fluid.layers.data(name="score", shape=[500], dtype="float32")
     avg_cost = cost_function(prediction, label)
     # accuracy = fluid.layers.accuracy(input=prediction, label=label)
-    return [avg_cost]  # 返回平均cost和acc
+    return avg_cost # 返回平均cost和acc
 
 
 def cost_function(prediction, label):
@@ -54,7 +55,7 @@ def optimizer_func():
     boundaries = [step * 200 for step in collocations.boundaries]
     values = [value * collocations.learn_rate for value in collocations.values]
     learn_rate = fluid.layers.piecewise_decay(boundaries, values)
-    return fluid.optimizer.RMSPropOptimizer(learning_rate=learn_rate), learn_rate
+    return fluid.optimizer.SGDOptimizer(learning_rate=learn_rate), learn_rate
 
 
 def rmsd(input, label):
@@ -64,6 +65,5 @@ def rmsd(input, label):
     :param label:
     :return:
     """
-
     result = None
     return result

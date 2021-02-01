@@ -2,6 +2,7 @@ from __future__ import print_function
 import paddle
 import os
 import time
+import logging
 from visualdl import LogWriter
 
 from utils.inference_utils import *
@@ -10,6 +11,28 @@ from net.network import *
 from config import RNA_Config
 
 collocations = RNA_Config()
+
+logger = None
+
+
+def init_log_config():
+    """
+    初始化日志相关配置
+    :return:
+    """
+    global logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    # os.getcwd(): 返回当前路径
+    log_path = os.path.join(os.getcwd(), 'logs')
+    if not os.path.exists(log_path):
+        os.makedirs(log_path)
+    log_name = os.path.join(log_path, 'train_' + str(int(time.time())) + '.log')
+    fh = logging.FileHandler(log_name, mode='w')
+    fh.setLevel(logging.DEBUG)
+    formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
 
 
 def train_test(program, reader, feed_order, avg_cost, place):
@@ -23,7 +46,7 @@ def train_test(program, reader, feed_order, avg_cost, place):
     :param place:
     :return:
     """
-    print("Test Model...")
+    logger.info("Test Model...")
     feed_var_list = [program.global_block().var(var_name) for var_name in feed_order]
 
     feeder_test = fluid.DataFeeder(feed_list=feed_var_list, place=place)
@@ -42,6 +65,7 @@ def train_test(program, reader, feed_order, avg_cost, place):
 
 
 def train():
+    init_log_config()
     # 设置训练环境
     place = fluid.CUDAPlace(0) if collocations.use_gpu else fluid.CPUPlace()
 
@@ -56,10 +80,7 @@ def train():
     main_program = fluid.default_main_program()
     star_program = fluid.default_startup_program()
     prediction = inference_program()
-    train_func_outputs = train_program(prediction)
-    avg_cost = train_func_outputs[0]
-
-    test_program = main_program.clone(for_test=True)
+    avg_cost = train_program(prediction)
 
     sgd_optimizer, learn_rate = optimizer_func()
     sgd_optimizer.minimize(avg_cost)
@@ -71,7 +92,7 @@ def train():
     if not os.path.exists(params_dirname):
         os.makedirs(params_dirname)
 
-    feed_order = ['rna', 'score']
+    feed_order = ['rna', 'label', 'score']
 
     # 启动上下文构建的训练器
     feed_var_list_loop = [main_program.global_block().var(var_name) for var_name in feed_order]
@@ -80,19 +101,16 @@ def train():
 
     if collocations.continue_train:
         # 加载上一次训练模型
-        print("Loading model......")
+        logger.info("Loading model......")
         fluid.io.load_persistables(executor=exe,
                                    dirname=params_dirname,
                                    main_program=main_program,
                                    filename="persistables")
-
     log_name = str(int(time.time()))
     log_writer = LogWriter("./log/train" + log_name)
     # 训练主循环
     train_iters = 0
-    max_acc = collocations.max_acc
-    fetch_list = [var.name for var in train_func_outputs]
-    fetch_list.append(learn_rate)
+    fetch_list = [avg_cost.name, learn_rate]
     for epoch_id in range(collocations.epochs):
         for step_id, data in enumerate(train_readers()):
             # 运行训练器
@@ -103,13 +121,19 @@ def train():
             # 测试结果
             train_iters += 1
             log_writer.add_scalar(tag='train/loss', step=train_iters, value=cost)
-            print("Epoch: {}, Step: {}, Loss: {:.6}, Learn_rate: {:.7}".
+            logger.info("Epoch: {}, Step: {}, Loss: {:.6}, Learn_rate: {:.7}".
                   format(epoch_id, step_id, cost, learn_rate))
-            if step_id == 5:
-                break
+
+        '''
         avg_cost_test = train_test(test_program, test_readers, feed_order, avg_cost, place)
         log_writer.add_scalar(tag='test/loss', step=epoch_id + 1, value=avg_cost_test)
-        print('Epoch {}, Test Loss {}'.format(epoch_id, avg_cost_test))
+        logger.info('Epoch {}, Test Loss {}'.format(epoch_id, avg_cost_test))
+        '''
+        logger.info("Save medol...")
+        fluid.io.save_persistables(executor=exe, dirname=params_dirname,
+                                   main_program=main_program, filename="persistables")
+        fluid.io.save_inference_model(params_dirname, ["rna"], prediction, exe,
+                                      params_filename="per_model", model_filename="__model__")
 
 
 if __name__ == '__main__':

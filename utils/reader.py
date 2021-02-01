@@ -46,9 +46,8 @@ def train_reader():
                                  axis=0)  # 字符映射 A->1, U->2, C->3, G->4
             label = np.concatenate((np.array([collocations.label[structure] for structure in label]), null),
                                    axis=0)  # 字符映射 '('->1, ')'->2, '.'->3
-            rna = np.concatenate((rna, label), axis=0)
             score = np.concatenate((np.array(score), null), axis=0)
-            yield rna, score
+            yield rna, label, score
     return reader
 
 
@@ -90,9 +89,8 @@ def val_reader():
                                  axis=0)  # 字符映射 A->1, U->2, C->3, G->4
             label = np.concatenate((np.array([collocations.label[structure] for structure in label]), null),
                                    axis=0)  # 字符映射 '('->1, ')'->2, '.'->3
-            rna = np.concatenate((rna, label), axis=0)
             score = np.concatenate((np.array(score), null), axis=0)
-            yield rna, score
+            yield rna, label, score
 
     return reader
 
