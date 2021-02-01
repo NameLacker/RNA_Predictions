@@ -6,5 +6,8 @@ import paddle.fluid as fluid
 
 from utils.reader import *
 
-traindata = val_reader()
-# val_reader()
+trains, devs = load_train_data()
+for train, dev in zip(trains, devs):
+    print(train)
+    print(dev)
+    break

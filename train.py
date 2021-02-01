@@ -69,34 +69,33 @@ def train():
     # 设置训练环境
     place = fluid.CUDAPlace(0) if collocations.use_gpu else fluid.CPUPlace()
 
-    # ============================ 构造数据读取器 ============================
-    train_readers = paddle.batch(
-        paddle.reader.shuffle(train_reader(), collocations.batch_size),
-        batch_size=collocations.batch_size)
-    test_readers = paddle.batch(
-        paddle.reader.shuffle(val_reader(), collocations.batch_size),
-        batch_size=collocations.batch_size)
     # ============================ 构造训练程序 ============================
     main_program = fluid.default_main_program()
     star_program = fluid.default_startup_program()
-    prediction = inference_program()
-    avg_cost = train_program(prediction)
-
-    sgd_optimizer, learn_rate = optimizer_func()
-    sgd_optimizer.minimize(avg_cost)
-    exe = fluid.Executor(place)
-
     # ============================ 提供数据并构建主训练循环 ============================
+    feed_order = ['rna', 'label', 'score']
     # 指定目录路径以保存参数
     params_dirname = collocations.params_dirname
     if not os.path.exists(params_dirname):
         os.makedirs(params_dirname)
 
-    feed_order = ['rna', 'label', 'score']
+    with fluid.program_guard(main_program, star_program):
+        # ============================ 构造数据读取器 ============================
+        train_readers = paddle.batch(
+            paddle.reader.shuffle(train_reader(), collocations.batch_size),
+            batch_size=collocations.batch_size)
 
-    # 启动上下文构建的训练器
-    feed_var_list_loop = [main_program.global_block().var(var_name) for var_name in feed_order]
-    feeder = fluid.DataFeeder(feed_list=feed_var_list_loop, place=place)
+        prediction = inference_program()
+        avg_cost = train_program(prediction)
+
+        sgd_optimizer, learn_rate = optimizer_func()
+        sgd_optimizer.minimize(avg_cost)
+
+        # 启动上下文构建的训练器
+        feed_var_list_loop = [main_program.global_block().var(var_name) for var_name in feed_order]
+        feeder = fluid.DataFeeder(feed_list=feed_var_list_loop, place=place)
+
+    exe = fluid.Executor(place)
     exe.run(star_program)
 
     if collocations.continue_train:

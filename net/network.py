@@ -43,9 +43,9 @@ def stacked_lstm_net(rna, label):
         inputs = [fc, lstm]
 
     # 池化层
-    fc_last = fluid.layers.sequence_pool(input=inputs[0], pool_type='max')
     lstm_last = fluid.layers.sequence_pool(input=inputs[1], pool_type='max')
+    fc_last = fluid.layers.fc(lstm_last, class_dim, act='tanh')
 
     # 全连接层，softmax预测
-    prediction = fluid.layers.fc(input=[fc_last, lstm_last], size=class_dim, act='softmax')
+    prediction = fluid.layers.softmax(fc_last)
     return prediction
