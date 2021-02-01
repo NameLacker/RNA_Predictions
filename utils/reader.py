@@ -65,23 +65,35 @@ def val_reader():
     labels = []
     scores = []
     for line in train_data:
-        if line == '\n':
-            scores.append(score)
-        lock += 1
-        if line[:3] == '>id':
-            lock = 0
-            score = []
-        if lock == 1:
-            rnas.append(line.replace("\n", ""))
-        if lock == 2:
-            labels.append(line.replace("\n", ""))
-        if lock > 2:
-            score.append(line.replace("\n", ""))
-    train_data = zip(rnas, labels, scores)
+        try:
+            if line == '\n':
+                scores.append(score)
+            lock += 1
+            if line[:3] == '>id':
+                lock = 0
+                score = []
+            if lock == 1:
+                rnas.append(line.replace("\n", ""))  # RNA序列
+            if lock == 2:
+                labels.append(line.replace("\n", ""))  # 二级配对关系
+            if lock > 2:
+                score.append(eval(line.replace("\n", "").split()[1]))  # 各个位置未配对概率
+        except Exception as e:
+            pass
+
+    val_data = zip(rnas, labels, scores)
 
     def reader():
-        for rna, label, score in train_data:
-            yield rna, label
+        for rna, label, score in val_data:
+            size = len(rna)
+            null = [0 for i in range(500 - size)]
+            rna = np.concatenate((np.array([collocations.input[base] for base in rna]), null),
+                                 axis=0).reshape((500, 1))  # 字符映射 A->1, U->2, C->3, G->4
+            label = np.concatenate((np.array([collocations.label[structure] for structure in label]), null),
+                                   axis=0).reshape((500, 1))  # 字符映射 '('->1, ')'->2, '.'->3
+            rna = np.concatenate([rna, label], axis=1)
+            score = np.concatenate((np.array(score), null), axis=0)
+            yield rna, score
 
     return reader()
 

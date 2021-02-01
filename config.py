@@ -23,8 +23,8 @@ class Config:
 
 class RNA_Config:
     def __init__(self):
-        self.stacked_num = 9  # LSTM双向栈的层数
-        self.batch_size = 1  # 批大小
+        self.stacked_num = 15  # LSTM双向栈的层数
+        self.batch_size = 32  # 批大小
         self.epochs = 50  # 一共训练多少个轮次
         self.use_gpu = True  # 是否使用gpu
         self.continue_train = False  # 是否加载前一次训练参数

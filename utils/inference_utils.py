@@ -26,7 +26,7 @@ def train_program(prediction):
     :param prediction:
     :return:
     """
-    label = fluid.layers.data(name="score", shape=[500], dtype="float64")
+    label = fluid.layers.data(name="score", shape=[500], dtype="float32")
     avg_cost = cost_function(prediction, label)
     # accuracy = fluid.layers.accuracy(input=prediction, label=label)
     return [avg_cost]  # 返回平均cost和acc
@@ -39,8 +39,9 @@ def cost_function(prediction, label):
     :param label:
     :return:
     """
-    sub = fluid.layers.elementwise_sub(prediction, label)
-    cost = fluid.layers.square(sub)
+    # sub = fluid.layers.elementwise_sub(prediction, label)
+    # cost = fluid.layers.square(sub)
+    cost = fluid.layers.square_error_cost(prediction, label)
     avg_cost = fluid.layers.mean(cost)
     return avg_cost
 
