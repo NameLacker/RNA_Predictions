@@ -12,7 +12,7 @@ from config import RNA_Config
 collocations = RNA_Config()
 
 
-def train_test(program, reader, feed_order, avg_cost, accuracy, place):
+def train_test(program, reader, feed_order, avg_cost, place):
     """
     计算训练中模型在test数据集上的结果
     :param feed_order:
@@ -24,22 +24,21 @@ def train_test(program, reader, feed_order, avg_cost, accuracy, place):
     :return:
     """
     print("Test Model...")
-    count = 0
     feed_var_list = [program.global_block().var(var_name) for var_name in feed_order]
 
     feeder_test = fluid.DataFeeder(feed_list=feed_var_list, place=place)
     test_exe = fluid.Executor(place)
-    accumulated = len([avg_cost, accuracy]) * [0]
+    res_lose = 0.
+    count = 0
     for test_data in reader():
+        count += 1
         avg_cost_np = test_exe.run(
             program=program,
             feed=feeder_test.feed(test_data),
-            fetch_list=[avg_cost, accuracy])
-        accumulated = [
-            x[0] + x[1][0] for x in zip(accumulated, avg_cost_np)
-        ]
-        count += 1
-    return [x / count for x in accumulated]
+            fetch_list=[avg_cost])
+        res_lose += avg_cost_np[0][0]
+    res_cost = res_lose / 10
+    return res_cost
 
 
 def train():
@@ -59,6 +58,8 @@ def train():
     prediction = inference_program()
     train_func_outputs = train_program(prediction)
     avg_cost = train_func_outputs[0]
+
+    test_program = main_program.clone(for_test=True)
 
     sgd_optimizer, learn_rate = optimizer_func()
     sgd_optimizer.minimize(avg_cost)
@@ -104,10 +105,11 @@ def train():
             log_writer.add_scalar(tag='train/loss', step=train_iters, value=cost)
             print("Epoch: {}, Step: {}, Loss: {:.6}, Learn_rate: {:.7}".
                   format(epoch_id, step_id, cost, learn_rate))
-        avg_cost_test, acc_test = train_test(test_program, test_reader, feed_order, avg_cost, accurary, place)
-        log_writer.add_scalar(tag='test/acc', step=epoch_id + 1, value=acc_test)
+            if step_id == 5:
+                break
+        avg_cost_test = train_test(test_program, test_readers, feed_order, avg_cost, place)
         log_writer.add_scalar(tag='test/loss', step=epoch_id + 1, value=avg_cost_test)
-        print('Epoch {}, Acc {}, Test Loss {}'.format(epoch_id, acc_test, avg_cost_test))
+        print('Epoch {}, Test Loss {}'.format(epoch_id, avg_cost_test))
 
 
 if __name__ == '__main__':

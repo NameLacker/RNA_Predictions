@@ -55,3 +55,15 @@ def optimizer_func():
     values = [value * collocations.learn_rate for value in collocations.values]
     learn_rate = fluid.layers.piecewise_decay(boundaries, values)
     return fluid.optimizer.RMSPropOptimizer(learning_rate=learn_rate), learn_rate
+
+
+def rmsd(input, label):
+    """
+    评价指标（性能度量函数）
+    :param input:
+    :param label:
+    :return:
+    """
+
+    result = None
+    return result
