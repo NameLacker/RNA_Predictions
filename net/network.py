@@ -1,51 +1,35 @@
-from __future__ import print_function
+import paddle
 import paddle.fluid as fluid
-
-from config import RNA_Config
-
-paramerts = RNA_Config()
+from paddle.fluid.dygraph import Layer
 
 
-def stacked_lstm_net(rna, label):
-    """
-    栈式双向LSTM结构
-    :param rna:
-    :param label:
-    :return:
-    """
-    stacked_num = paramerts.stacked_num
-    input_dim = paramerts.max_size
-    emb_dim = paramerts.emb_dim
-    hid_dim = paramerts.hid_dim
-    class_dim = paramerts.class_dim
-    assert stacked_num % 2 == 1
-    # 计算词向量
-    emb_rna = fluid.layers.embedding(
-        input=rna, size=[input_dim, emb_dim], is_sparse=True)
-    emb_label = fluid.layers.embedding(
-        input=label, size=[input_dim, emb_dim], is_sparse=True
-    )
-    # 第一层栈
-    # 全连接层
-    fc1_rna = fluid.layers.fc(input=emb_rna, size=hid_dim)
-    fc1_label = fluid.layers.fc(input=emb_label, size=hid_dim)
-    fc1 = fluid.layers.concat([fc1_rna, fc1_label], axis=1)
-    fc1 = fluid.layers.fc(input=fc1, size=hid_dim)
-    # lstm层
-    lstm1, cell1 = fluid.layers.dynamic_lstm(input=fc1, size=hid_dim)
+class Network(Layer):
+    def __init__(self,
+                 sequence_vocabulary, bracket_vocabulary,
+                 dmodel=128,
+                 layers=8,
+                 dropout=0.15,
+                 ):
+        super(Network, self).__init__()
+        self.sequence_vocabulary = sequence_vocabulary
+        self.bracket_vocabulary = bracket_vocabulary
+        self.dropout_rate = dropout
+        self.model_size = dmodel
+        self.layers = layers
 
-    inputs = [fc1, lstm1]
-
-    # 其余所有栈结构
-    for i in range(2, stacked_num + 1):
-        fc = fluid.layers.fc(input=inputs, size=hid_dim)
-        lstm, cell = fluid.layers.dynamic_lstm(input=fc, size=hid_dim, is_reverse=(i % 2) == 0)
-        inputs = [fc, lstm]
-
-    # 池化层
-    lstm_last = fluid.layers.sequence_pool(input=inputs[1], pool_type='max')
-    fc_last = fluid.layers.fc(lstm_last, class_dim, act='tanh')
-
-    # 全连接层，softmax预测
-    prediction = fluid.layers.softmax(fc_last)
-    return prediction
+    def forward(self, seq, dot):
+        emb_seq = paddle.fluid.embedding(seq, size=(self.sequence_vocabulary.size, self.model_size), is_sparse=True)
+        emb_dot = paddle.fluid.embedding(dot, size=(self.bracket_vocabulary.size, self.model_size), is_sparse=True)
+        emb = paddle.fluid.layers.concat(input=[emb_seq, emb_dot], axis=1)
+        emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu")
+        for _ in range(self.layers):
+            emb = paddle.fluid.layers.fc(emb, size=self.model_size * 4)
+            fwd, cell = paddle.fluid.layers.dynamic_lstm(input=emb, size=self.model_size * 4, use_peepholes=True,
+                                                         is_reverse=False)
+            back, cell = paddle.fluid.layers.dynamic_lstm(input=emb, size=self.model_size * 4, use_peepholes=True,
+                                                          is_reverse=True)
+            emb = paddle.fluid.layers.concat(input=[fwd, back], axis=1)
+            emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu")
+        ff_out = paddle.fluid.layers.fc(emb, size=2, act="relu")
+        soft_out = paddle.fluid.layers.softmax(ff_out, axis=1)
+        return soft_out[:, 0]

@@ -10,14 +10,22 @@
 
 ## 测试项目  
 ***
-* 运行`python train.py`开始训练，训练结果参数会保存在`./inference_model`目录下  
+* 运行`python train.py`开始训练，训练参数会保存在`./inference_model`目录下  
 * 运行`visualdl --logdir ./log post 8040`，再在浏览器打开`http://localhost:8040/`可以查看训练进度  
-* 运行`python test.py`测试训练结果，此测试是针对影评的情感分类，共两个分类--积极和消极  
-* 测试模型图片  
-![Image](https://github.com/NameLacker/RNA_Prediction/blob/main/result/__model__.svg)
+* 运行`python test.py`产生测试结果  
 
 ## 模型
 ***
 主要结构采用bidirectional-LSTM（双向LSTM网络结构），and so on......  
-https://github.com/NameLacker/RNA_Prediction/invitations
-https://github.com/NameLacker/RNA_Prediction/invitations
+可以尝试从以下几方面来进行调优:（此处调用官方提示说明）  
+* 输入数据预处理，提取更多feature
+    * 基线模型使用LinearFold预测的RNA二级结构作为辅助feature。选手可以尝试增加更多的辅助feature，如：使用其他二级结构预测软件（如Vienna RNAfold, RNAstructure, CONTRAfold等）生成新的二级结构feature。
+* 更复杂的Embedding形式
+* 可以尝试在Embedding层使用Elmo, Bert等预训练模型
+* 优化网络结构和参数
+    * 隐层大小选择 - 宽度和层数
+    * 尝试复杂网络构建
+    * 尝试正则化、dropout等方式避免过拟合
+    * 选择学习率等超参数
+    * 选择合适的损失函数
+    * 尝试不同的优化器

@@ -1,5 +1,8 @@
 import os
 import numpy as np
+from config import RNA_Config
+
+collocations = RNA_Config()
 
 
 def read_data(filename, test=False):
@@ -43,27 +46,7 @@ def read_data(filename, test=False):
     return data
 
 
-def load_train_data():
-    assert os.path.exists("data/train.txt")
-    assert os.path.exists("data/dev.txt")
-    train = read_data("data/train.txt")
-    dev = read_data("data/dev.txt")
-    return train, dev
-
-
-def load_test_data():
-    assert os.path.exists("data/test_nolabel.txt")
-    test = read_data("data/test_nolabel.txt", test=True)
-    return test
-
-
-def load_test_label_data():
-    assert os.path.exists("data/test.txt")
-    test = read_data("data/test.txt")
-    return test
-
-
-def reader_creator(args, data,
+def reader_creator(data,
                    sequence_vocabulary, bracket_vocabulary,
                    test=False):
     def reader():
@@ -80,3 +63,36 @@ def reader_creator(args, data,
                 yield sequence, structure
 
     return reader
+
+
+def load_train_data():
+    """
+    训练数据读取器
+    :return:
+    """
+    assert os.path.exists(collocations.train_dataset)
+    assert os.path.exists(collocations.dev_dataset)
+    train = read_data(collocations.train_dataset)
+    dev = read_data(collocations.dev_dataset)
+    return train, dev
+
+
+def load_test_data():
+    """
+    不带标签的测试数据读取器
+    :return:
+    """
+    assert os.path.exists(collocations.test_dataset)
+    test = read_data(collocations.test_dataset, test=True)
+    return test
+
+
+def load_test_label_data():
+    """
+    由于比赛的公开数据不提供测试集的标签，故本模型无法运行预设的test_withlabel，
+    需自己生成一个带标签的测试集~/data/test.txt
+    :return:
+    """
+    assert os.path.exists(collocations.test)
+    test = read_data(collocations.test)
+    return test

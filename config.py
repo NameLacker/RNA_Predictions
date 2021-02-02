@@ -1,49 +1,43 @@
-
-
-class Config:
-    def __init__(self):
-        self.batch_size = 128  # 批大小
-        self.epochs = 50  # 一共训练多少个轮次
-        self.use_gpu = True  # 是否使用gpu
-        self.continue_train = True  # 是否加载前一次训练参数
-
-        self.class_dim = 2  # 情感分类的类别数
-        self.emb_dim = 128  # 词向量的维度
-        self.hid_dim = 512  # 隐藏层的维度
-        self.stacked_num = 9  # LSTM双向栈的层数
-
-        self.max_acc = 0.  # 保存要求最低准确率
-
-        self.params_dirname = "./inference_model"  # 模型文件存放文件夹
-
-        self.learn_rate = 0.001  # 初始学习率
-        self.boundaries = [1, 3, 6, 9, 12, 15, 18, 21, 24, 27]  # 经过多少个epoch降低学习率
-        self.values = [1., 0.66, 0.33, 0.1, 0.066, 0.033, 0.01, 0.005, 0.001, 0.0001, 0.00001]  # 不同阶段学习率
+"""
+配置文件
+"""
 
 
 class RNA_Config:
     def __init__(self):
-        self.stacked_num = 9  # LSTM双向栈的层数
-        self.batch_size = 32  # 批大小
+        # ============================ 训练参数 ============================
+        self.buf_size = 500  # 缓冲区保存的数据个数
+        self.batch_size = 1  # 批大小
         self.epochs = 1  # 一共训练多少个轮次
         self.use_gpu = True  # 是否使用gpu
         self.continue_train = False  # 是否加载前一次训练参数
+        self.best_dev_loss = 100.  # 最低保存模型参数所需损失
+        self.START = "<START>"  # 数据读取器相关参数
+        self.STOP = "<STOP>"  # 数据读取器相关参数
+        self.UNK = "<UNK>"  # 数据读取器相关参数
 
-        self.max_size = 20  # 输入数据统一尺寸
-        self.class_dim = 500  # 输出尺寸
-        self.emb_dim = 500  # 词向量的维度
-        self.hid_dim = 500  # 隐藏层的维度
+        # ============================ 网络模型参数 ============================
+        self.dmodel = 128  # embedding数据维度
+        self.layers = 8  # lstm层数
+        self.dropout = 0.15  # 模型参数丢弃概率
 
-        self.max_acc = 0.  # 保存要求最低准确率
-
+        # ============================ 数据文件保存 ============================
         self.params_dirname = "./inference_model"  # 模型文件存放文件夹
-        self.train_dataset = "./data/rna/train.txt"
-        self.dev_dataset = "./data/rna/dev.txt"
-        self.test_dataset = "./data/rna/test_nolabel.txt"
+        self.train_dataset = "./data/train.txt"  # 训练文件
+        self.dev_dataset = "./data/dev.txt"  # 验证文件
+        self.test_dataset = "./data/test_nolabel.txt"  # 测试文件
+        self.test = "./data/test.txt"  # 自己生成的带标签测试集
+        self.train_log = "./log/train"  # visualdl格式log保存路径
+        self.result = "./result"  # 测试结果保存文件夹
 
+        # ============================ 学习率动态调整策略 ============================
+        self.beta1 = 0.9  # 梯度下降所需参数1
+        self.beta2 = 0.999  # 梯度下降所需参数2
+        self.epsilon = 1e-08  # 梯度下降所需参数3
         self.learn_rate = 0.001  # 初始学习率
+        self.each_step = 5000  # 每隔多少步调整学习率
         self.boundaries = [1, 3, 6, 9, 12, 15, 18, 21, 24, 27]  # 经过多少个epoch降低学习率
         self.values = [1., 0.66, 0.33, 0.1, 0.066, 0.033, 0.01, 0.005, 0.001, 0.0001, 0.00001]  # 不同阶段学习率
 
-        self.input = {'A': 1, 'U': 2, 'C': 3, 'G': 4}
-        self.label = {'(': 1, ')': 2, '.': 3}
+
+
