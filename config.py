@@ -8,7 +8,7 @@ class RNA_Config:
         # ============================ 训练参数 ============================
         self.buf_size = 500  # 缓冲区保存的数据个数
         self.batch_size = 1  # 批大小
-        self.epochs = 1  # 一共训练多少个轮次
+        self.epochs = 30  # 一共训练多少个轮次
         self.use_gpu = True  # 是否使用gpu
         self.continue_train = False  # 是否加载前一次训练参数
         self.best_dev_loss = 100.  # 最低保存模型参数所需损失

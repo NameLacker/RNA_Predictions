@@ -1,6 +1,6 @@
 # 螺旋桨RNA结构预测竞赛：Unpaired Probability Prediction  
 ***
-成员有： 舒涛，姚智超，朱满琴 and so on...  
+成员有： 舒涛，姚智超，朱满琴，邱凯 and so on...  
 内容有待开发，前路一片光明。  
 革命尚未成功，同志仍需努力。  
 加油，奥利给！！！
