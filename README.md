@@ -63,4 +63,5 @@
   
 ## 当前模型结构
 ***  
+模型图  
 ![model](https://github.com/NameLacker/RNA_Prediction/blob/master/result/__model__.svg)
