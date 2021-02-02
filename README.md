@@ -7,7 +7,49 @@
 
 ## 项目所需依赖库
 ***
-运行`pip install -r requestments -i https://pypi.douban.com/simple`下载安装所需依赖
+运行`pip install -r requestments -i https://pypi.douban.com/simple`下载安装所需依赖  
+项目目录树：  
+.
+├── config.py
+├── data
+│   ├── data_explanation.txt
+│   ├── dev.txt
+│   ├── README.md
+│   ├── test_nolabel.txt
+│   └── train.txt
+├── demo.py
+├── inference_model
+│   ├── __model__
+│   ├── per_model
+│   └── persistables
+├── log
+│   └── train1612239294
+│       └── vdlrecords.1612239294.log
+├── logs
+│   └── train_1612239291.log
+├── net
+│   ├── __init__.py
+│   ├── network.py
+│   └── __pycache__
+│       ├── __init__.cpython-37.pyc
+│       └── network.cpython-37.pyc
+├── __pycache__
+│   └── config.cpython-37.pyc
+├── README.md
+├── requestments.txt
+├── result
+├── test.py
+├── train.py
+└── utils
+    ├── __init__.py
+    ├── process.py
+    ├── __pycache__
+    │   ├── __init__.cpython-37.pyc
+    │   ├── process.cpython-37.pyc
+    │   ├── reader.cpython-37.pyc
+    │   └── vocabulary.cpython-37.pyc
+    ├── reader.py
+    └── vocabulary.py
 
 ## 测试项目  
 ***

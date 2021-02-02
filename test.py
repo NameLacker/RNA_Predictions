@@ -1,6 +1,7 @@
 from __future__ import print_function
 import numpy as np
 import os
+import time
 import paddle.fluid as fluid
 
 from config import RNA_Config
@@ -53,12 +54,13 @@ def run_test(args):
                         )
         pred = list(np.array(pred))
         test_results.append(pred)
+        # 打印预测信息
         print("Prediction RNA: {}\n"
               "RNA Sequence: {}\n"
               "RNA Structure: {}\n"
               "RNA Probability: {}\n"
               "RNA Length: {}\n"
-              .format(test_data[id]["id"], test_data[id]["sequence"],
+              .format(test_data[id]["id"].split()[1], test_data[id]["sequence"],
                       test_data[id]["structure"], pred, len(pred)))
     return test_results
 
@@ -69,6 +71,14 @@ def save_results(results):
     :param results:
     :return:
     """
+    # 删除旧结果
+    print("Delete old file......")
+    res_list = os.listdir(collocations.result)
+    for file in res_list:
+        file_path = os.path.join(collocations.result, file)
+        os.remove(file_path)
+    time.sleep(1)
+
     print("Start save results......")
     for id, result in enumerate(results):
         id += 1
@@ -80,6 +90,6 @@ def save_results(results):
 
 
 if __name__ == '__main__':
-    collocations = RNA_Config()
+    collocations = RNA_Config()  # 获取配置信息
     results = run_test(collocations)
     save_results(results)
