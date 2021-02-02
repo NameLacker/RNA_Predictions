@@ -62,4 +62,5 @@
     * 尝试不同的优化器
   
 ## 当前模型结构
-***
+***  
+![model](https://github.com/NameLacker/RNA_Prediction/blob/rna_pre/result/__model__.svg)
