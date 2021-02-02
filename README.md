@@ -9,7 +9,7 @@
 ***
 运行`pip install -r requestments -i https://pypi.douban.com/simple`下载安装所需依赖  
 项目目录树：  
-.
+.  
 ├── config.py  
 ├── data  
 │   ├── data_explanation.txt  
