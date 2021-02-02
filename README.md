@@ -1,5 +1,6 @@
 # 螺旋桨RNA结构预测竞赛：Unpaired Probability Prediction  
 ***
+成员有： 舒涛，姚智超，朱满琴 and so on...  
 内容有待开发，前路一片光明。  
 革命尚未成功，同志仍需努力。  
 加油，奥利给！！！
@@ -12,7 +13,7 @@
 ***
 * 运行`python train.py`开始训练，训练参数会保存在`./inference_model`目录下  
 * 运行`visualdl --logdir ./log post 8040`，再在浏览器打开`http://localhost:8040/`可以查看训练进度  
-* 运行`python test.py`产生测试结果  
+* 运行`python test.py`产生测试结果，测试结果保存在`./result`目录下  
 
 ## 模型
 ***
