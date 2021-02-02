@@ -71,13 +71,16 @@ def save_results(results):
     :param results:
     :return:
     """
-    # 删除旧结果
-    print("Delete old file......")
-    res_list = os.listdir(collocations.result)
-    for file in res_list:
-        file_path = os.path.join(collocations.result, file)
-        os.remove(file_path)
-    time.sleep(1)
+    try:
+        # 删除旧结果
+        print("Delete old file......")
+        res_list = os.listdir(collocations.result)
+        for file in res_list:
+            file_path = os.path.join(collocations.result, file)
+            os.remove(file_path)
+        time.sleep(1)
+    except Exception as e:
+        pass
 
     print("Start save results......")
     for id, result in enumerate(results):
