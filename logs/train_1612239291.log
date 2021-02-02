@@ -1,4 +1,0 @@
-2021-02-02 12:14:56,505 - train.py[line:134] - INFO: Epoch: 0, Step: 20, Loss: 0.20862554, Learning_rate: 0.001
-2021-02-02 12:14:58,828 - train.py[line:134] - INFO: Epoch: 0, Step: 40, Loss: 0.20298924, Learning_rate: 0.001
-2021-02-02 12:15:01,254 - train.py[line:134] - INFO: Epoch: 0, Step: 60, Loss: 0.2016082, Learning_rate: 0.001
-2021-02-02 12:15:03,453 - train.py[line:134] - INFO: Epoch: 0, Step: 80, Loss: 0.20567354, Learning_rate: 0.001

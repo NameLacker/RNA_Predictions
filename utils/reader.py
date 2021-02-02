@@ -71,8 +71,12 @@ def load_train_data():
     :return:
     """
     assert os.path.exists(collocations.train_dataset)
+    assert os.path.exists(collocations.train_dataset_other)
     assert os.path.exists(collocations.dev_dataset)
+
     train = read_data(collocations.train_dataset)
+    train1 = read_data(collocations.train_dataset_other)
+    train.extend(train1)
     dev = read_data(collocations.dev_dataset)
     return train, dev
 

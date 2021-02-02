@@ -10,7 +10,7 @@ class RNA_Config:
         self.batch_size = 1  # 批大小
         self.epochs = 30  # 一共训练多少个轮次
         self.use_gpu = True  # 是否使用gpu
-        self.continue_train = False  # 是否加载前一次训练参数
+        self.continue_train = True  # 是否加载前一次训练参数
         self.best_dev_loss = 100.  # 最低保存模型参数所需损失
         self.START = "<START>"  # 数据读取器相关参数
         self.STOP = "<STOP>"  # 数据读取器相关参数
@@ -24,6 +24,7 @@ class RNA_Config:
         # ============================ 数据文件保存 ============================
         self.params_dirname = "./inference_model"  # 模型文件存放文件夹
         self.train_dataset = "./data/train.txt"  # 训练文件
+        self.train_dataset_other = "./data/other_train.txt"
         self.dev_dataset = "./data/dev.txt"  # 验证文件
         self.test_dataset = "./data/test_nolabel.txt"  # 测试文件
         self.test = "./data/test.txt"  # 自己生成的带标签测试集
