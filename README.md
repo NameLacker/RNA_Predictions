@@ -24,7 +24,6 @@
 │   └── persistables  
 ├── logs  
 │   └── train_1612239291.log  
-├── md.text  
 ├── net  
 │   ├── __init__.py  
 │   ├── network.py  
