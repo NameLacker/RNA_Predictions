@@ -115,9 +115,11 @@ def train():
         # =============================== 开始训练 ===============================
         for step_id, data in enumerate(train_reader()):
             # 运行训练器
+            t1 = time.time()
             batch_loss, pred_values, learning_rate = exe.run(main_program, feed=feeder.feed(data),
                                                              fetch_list=[avg_loss.name, predictions.name, learn_rate],
                                                              return_numpy=False)
+            t2 = time.time() - t1
             batch_loss = np.array(batch_loss)[0]
             learning_rate = np.array(learning_rate)[0]
             avg_batch_loss += batch_loss
@@ -130,8 +132,8 @@ def train():
             if train_iters % 20 == 0:
                 batch_loss = avg_batch_loss / 20
                 log_writer.add_scalar(tag='train/loss', step=train_iters, value=float(batch_loss))
-                logger.info("Epoch: {}, Step: {}, Loss: {:.8}, Learning_rate: {:.8}".
-                            format(epoch_id, step_id+1, batch_loss, learning_rate))
+                logger.info("Epoch: {}, Step: {}, Loss: {:.8}, Learning_rate: {:.8}, Cost_time: {:.5}".
+                            format(epoch_id, step_id+1, batch_loss, learning_rate, t2))
                 avg_batch_loss = 0.
 
         # =============================== 验证程序 ===============================

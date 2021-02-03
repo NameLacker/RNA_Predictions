@@ -60,7 +60,29 @@
     * 选择学习率等超参数
     * 选择合适的损失函数
     * 尝试不同的优化器
-  
+
+    <table>
+        <tr>
+            <th>Embedding数据维度</th>
+            <th>Lstm 层数</th>
+            <th>Dropout概率</th>
+            <th>Loss</th>
+        </tr>
+        <tr>
+            <th>128</th>
+            <th>8</th>
+            <th>0.15</th>
+            <th>0.078323</th>
+        </tr>
+        <tr>
+            <th>128</th>
+            <th>16</th>
+            <th>0.15</th>
+            <th>None</th>
+        </tr>
+    </table>
+
+
 ## 当前模型结构
 ***  
 ![model](https://github.com/NameLacker/RNA_Prediction/blob/master/result/__model__.svg)
