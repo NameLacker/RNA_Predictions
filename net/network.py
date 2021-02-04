@@ -33,3 +33,6 @@ class Network(Layer):
         ff_out = paddle.fluid.layers.fc(emb, size=2, act="relu")
         soft_out = paddle.fluid.layers.softmax(ff_out, axis=1)
         return soft_out[:, 0]
+
+    def elmo_encoder(self, emb):
+        pass
