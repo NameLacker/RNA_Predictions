@@ -61,36 +61,38 @@
     * 选择合适的损失函数
     * ~~尝试不同的优化器~~
 
-    <table>
-        <thead>
-            <tr>
-                <th>Embedding数据维度</th>
-                <th>Lstm 层数</th>
-                <th>Dropout概率</th>
-                <th>Loss</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th>128</th>
-                <th>8</th>
-                <th>0.15</th>
-                <th>0.0699</th>
-            </tr>
-            <tr>
-                <th>256</th>
-                <th>8</th>
-                <th>0.15</th>
-                <th>0.078697</th>
-            </tr>
-            <tr>
-                <th>512</th>
-                <th>16</th>
-                <th>0.15</th>
-                <th>None</th>
-            </tr>
-        </tbody>
-    </table>
+## 不同参数下的验证结果
+***
+<table>
+    <thead>
+        <tr>
+            <th>Embedding数据维度</th>
+            <th>Lstm 层数</th>
+            <th>Dropout概率</th>
+            <th>Loss</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>128</th>
+            <th>8</th>
+            <th>0.15</th>
+            <th>0.0699</th>
+        </tr>
+        <tr>
+            <th>256</th>
+            <th>8</th>
+            <th>0.15</th>
+            <th>0.078697</th>
+        </tr>
+        <tr>
+            <th>512</th>
+            <th>16</th>
+            <th>0.15</th>
+            <th>None</th>
+        </tr>
+    </tbody>
+</table>
 
 
 ## 当前模型结构
