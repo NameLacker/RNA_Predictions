@@ -31,7 +31,7 @@ def process_vocabulary(data, quiet=False):
     STOP = collocations.STOP
     UNK = collocations.UNK
     if not quiet:
-        print("initializing vacabularies... ")
+        print("Initializing vacabularies... ")
     seq_vocab = vocabulary.Vocabulary()
     bracket_vocab = vocabulary.Vocabulary()
 
@@ -48,7 +48,7 @@ def process_vocabulary(data, quiet=False):
     for vocab in [seq_vocab, bracket_vocab]:
         vocab.freeze()
     if not quiet:
-        print("done.")
+        print("Process done!")
 
     def print_vocabulary(name, vocab):
         special = {START, STOP}

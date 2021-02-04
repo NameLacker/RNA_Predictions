@@ -11,6 +11,7 @@ from visualdl import LogWriter
 
 from utils.process import process_vocabulary
 from utils.reader import load_train_data, reader_creator
+from utils import optimization
 from net.network import Network
 from config import RNA_Config
 
@@ -42,7 +43,7 @@ def init_log_config():
 def train():
     init_log_config()  # 初始化日志
 
-    # =============================== 构造训练程序 ==============================
+    # =============================== 构造训练程序 =============================
     # 设置训练环境
     place = fluid.CUDAPlace(0) if collocations.use_gpu else fluid.CPUPlace()
     exe = fluid.Executor(place)
@@ -50,18 +51,24 @@ def train():
     start_program = fluid.default_startup_program()
 
     # ============================ 解析数据并构建数据读取器 =======================
+    # 读取数据
     train_data, val_data = load_train_data()
+    print("Size of Train Dataset: {}".format(len(train_data)))
+    # 构建数据字典
     seq_vocab, bracket_vocab = process_vocabulary(train_data)
+    # 训练数据读取
     train_reader = fluid.io.batch(
         fluid.io.shuffle(
             reader_creator(train_data, seq_vocab, bracket_vocab), buf_size=collocations.buf_size),
         batch_size=collocations.batch_size)
+    # 验证数据读取
     val_reader = fluid.io.batch(
         fluid.io.shuffle(
             reader_creator(val_data, seq_vocab, bracket_vocab), buf_size=collocations.buf_size),
         batch_size=collocations.batch_size)
 
     # ============================ 构造数据容器和网络 ============================
+    # 读取网络模型
     network = Network(
         seq_vocab,
         bracket_vocab,
@@ -69,44 +76,52 @@ def train():
         layers=collocations.layers,
         dropout=collocations.dropout,
     )
+    # 构建数据容器
     seq = fluid.data(name="seq", shape=[None], dtype="int64", lod_level=1)
     dot = fluid.data(name="dot", shape=[None], dtype="int64", lod_level=1)
     y = fluid.data(name="label", shape=[None], dtype="float32")
+    # 前向传播
     predictions = network(seq, dot)
+    # 交叉熵损失函数
     loss = fluid.layers.mse_loss(input=predictions, label=y)
     avg_loss = fluid.layers.mean(loss)
 
+    # 复制测试程序
     test_program = main_program.clone(for_test=True)
+    # 构造数据读取器
     feeder = fluid.DataFeeder(place=place, feed_list=[seq, dot, y])
 
+    # 动态学习率
     boundaries = [step * collocations.each_step for step in collocations.boundaries]
     values = [value * collocations.learn_rate for value in collocations.values]
     learn_rate = fluid.layers.piecewise_decay(boundaries, values)
-    optimizer = fluid.optimizer.Adam(
-        learning_rate=learn_rate,
-        beta1=collocations.beta1,
-        beta2=collocations.beta2,
-        epsilon=collocations.epsilon,
-    )
+    # 优化方法
+    optimizer = optimization.adam(learn_rate)
+    # 反向传播，计算梯度
     optimizer.minimize(avg_loss)
     exe.run(start_program)
 
-    # ============================ 保存训练日志及模型参数 ============================
+    # ============================ 保存训练日志及模型参数 ==========================
+    # 模型保存路径
     params_dirname = collocations.params_dirname
+
+    # 训练日志保存
     log_name = str(int(time.time()))
     log_writer = LogWriter(collocations.train_log + log_name)
     train_iters = 0
 
-    # ============================ 是否加载上一次训练模型参数 ==========================
+    # ========================== 是否加载上一次训练模型参数 =========================
     if collocations.continue_train:
-        # 加载上一次训练模型参数
         logger.info("Loading model......")
+        # 加载上一次训练模型参数
         fluid.io.load_persistables(executor=exe, dirname=params_dirname,
                                    main_program=main_program, filename="persistables")
 
-    avg_batch_loss = 0.
+    avg_batch_loss = 0.  # 最小loss
+    t = 0.
+    val_loss = 10000.
     for epoch_id in range(collocations.epochs):
-        # ============================== 构造数据读取器 ==============================
+        # ============================ 构造数据读取器 =============================
         train_reader = fluid.io.batch(
             fluid.io.shuffle(
                 reader_creator(train_data, seq_vocab, bracket_vocab), buf_size=collocations.buf_size),
@@ -120,6 +135,7 @@ def train():
                                                              fetch_list=[avg_loss.name, predictions.name, learn_rate],
                                                              return_numpy=False)
             t2 = time.time() - t1
+            t += t2
             batch_loss = np.array(batch_loss)[0]
             learning_rate = np.array(learning_rate)[0]
             avg_batch_loss += batch_loss
@@ -129,35 +145,37 @@ def train():
 
             # =============================== 打印日志 ===============================
             train_iters += 1
-            if train_iters % 20 == 0:
-                batch_loss = avg_batch_loss / 20
+            if train_iters % 10 == 0:
+                batch_loss = avg_batch_loss / 10
                 log_writer.add_scalar(tag='train/loss', step=train_iters, value=float(batch_loss))
                 logger.info("Epoch: {}, Step: {}, Loss: {:.8}, Learning_rate: {:.8}, Cost_time: {:.5}".
-                            format(epoch_id, step_id+1, batch_loss, learning_rate, t2))
+                            format(epoch_id, step_id+1, batch_loss, learning_rate, t))
                 avg_batch_loss = 0.
+                t = 0.
 
-        # =============================== 验证程序 ===============================
-        val_results = []
-        for data in val_reader():
-            loss, pred = exe.run(test_program,
-                                 feed=feeder.feed(data),
-                                 fetch_list=[avg_loss.name, predictions.name],
-                                 return_numpy=False
-                                 )
-            loss = np.array(loss)
-            val_results.append(loss[0])
-        val_loss = sum(val_results) / len(val_results)
-        log_writer.add_scalar(tag='test/loss', step=train_iters, value=val_loss)
-        logger.info("Epoch: {}, Test Loss: {}".format(epoch_id, val_loss))
+            # =============================== 验证程序 ===============================
+            if train_iters % collocations.val_batch == 0:
+                val_results = []
+                for data in val_reader():
+                    loss, pred = exe.run(test_program,
+                                         feed=feeder.feed(data),
+                                         fetch_list=[avg_loss.name, predictions.name],
+                                         return_numpy=False
+                                         )
+                    loss = np.array(loss)
+                    val_results.append(loss[0])
+                val_loss = sum(val_results) / len(val_results)
+                log_writer.add_scalar(tag='test/loss', step=train_iters, value=val_loss)
+                logger.info("Epoch: {}, Test Loss: {}".format(epoch_id, val_loss))
 
-        # =============================== 保存模型参数 ===============================
-        if val_loss <= collocations.best_dev_loss:
-            collocations.best_dev_loss = val_loss
-            logger.info("Save medol...")
-            fluid.io.save_persistables(executor=exe, dirname=params_dirname,
-                                       main_program=main_program, filename="persistables")
-            fluid.io.save_inference_model(params_dirname, ['seq', 'dot'], [predictions], exe,
-                                          params_filename="per_model", model_filename="__model__")
+                # =============================== 保存模型参数 ===============================
+                if val_loss < collocations.best_dev_loss:
+                    collocations.best_dev_loss = val_loss
+                    logger.info("Save medol...")
+                    fluid.io.save_persistables(executor=exe, dirname=params_dirname,
+                                               main_program=main_program, filename="persistables")
+                    fluid.io.save_inference_model(params_dirname, ['seq', 'dot'], [predictions], exe,
+                                                  params_filename="per_model", model_filename="__model__")
 
 
 if __name__ == '__main__':

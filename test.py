@@ -1,6 +1,7 @@
 from __future__ import print_function
 import numpy as np
 import os
+import zipfile
 import time
 import paddle.fluid as fluid
 
@@ -8,6 +9,8 @@ from config import RNA_Config
 from net.network import Network
 from utils.process import process_vocabulary
 from utils.reader import load_train_data, load_test_data, reader_creator
+
+collocations = RNA_Config()
 
 
 def run_test(args):
@@ -92,7 +95,24 @@ def save_results(results):
     print("Success save results......")
 
 
+def writeAllFileToZip(absDir, zipFile):
+    """
+    定义一个函数，递归读取absDir文件夹中所有文件，并塞进zipFile文件中。参数absDir表示文件夹的绝对路径。
+    :param absDir:
+    :param zipFile:
+    :return:
+    """
+    os.chdir(absDir)
+    absDir = "./prediction"
+    zipFile = zipfile.ZipFile(zipFile, 'w', zipfile.ZIP_DEFLATED)
+
+    for f in os.listdir(absDir):
+        absFile = os.path.join(absDir, f)  # 子文件的绝对路径
+        zipFile.write(absFile)  # 逐文件压缩
+
+
 if __name__ == '__main__':
     collocations = RNA_Config()  # 获取配置信息
     results = run_test(collocations)
     save_results(results)
+    writeAllFileToZip("./result", "predict.file.zip")

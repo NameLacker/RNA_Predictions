@@ -9,10 +9,12 @@ class RNA_Config:
         self.buf_size = 500  # 缓冲区保存的数据个数
         self.batch_size = 1  # 批大小
         self.epochs = 30  # 一共训练多少个轮次
-        self.best_dev_loss = 100.  # 最低保存模型参数所需损失
+        self.val_batch = 475  # 多少个batch做一次验证
+        self.best_dev_loss = 0.069  # 最低保存模型参数所需损失
 
         self.use_gpu = True  # 是否使用gpu
-        self.continue_train = False  # 是否加载前一次训练参数
+        self.continue_train = True  # 是否加载前一次训练参数
+        self.add = True  # 是否添加增广数据
 
         self.START = "<START>"  # 数据读取器相关参数
         self.STOP = "<STOP>"  # 数据读取器相关参数
@@ -20,7 +22,7 @@ class RNA_Config:
 
         # ============================ 网络模型参数 ============================
         self.dmodel = 128  # embedding数据维度
-        self.layers = 16  # lstm层数
+        self.layers = 8  # lstm层数
         self.dropout = 0.15  # 模型参数丢弃概率
 
         # ============================ 数据文件保存 ============================

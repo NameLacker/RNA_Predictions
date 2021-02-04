@@ -14,14 +14,19 @@ def get_rna():
     :return:
     """
     trains, devs = load_train_data()
-    index = 0
-    print(trains[5000])
+    with open('data/rna.txt', 'w') as f:
+        for train in trains:
+            f.write(str(train["sequence"]) + '\n')
 
 
 def parallel():
+    """
+    生成仅含RNA序列的txt文件
+    :return:
+    """
     trains, devs = load_train_data()
 
-    file = "data/res.txt"
+    file = "data/rna.txt"
     with open(file, 'r') as f:
         rna = f.readlines()
     rna = rna[1::2]
