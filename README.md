@@ -10,34 +10,43 @@
 运行`pip install -r requestments -i https://pypi.douban.com/simple`下载安装所需依赖  
 项目目录树：  
 .  
-├── config.py  
+├── config.py               // 配置文件  
 ├── data  
-│   ├── data_explanation.txt  
-│   ├── dev.txt  
-│   ├── README.md  
-│   ├── test_nolabel.txt  
-│   └── train.txt  
-├── demo.py  
+│   ├── data_explanation.txt                // 数据说明文件  
+│   ├── dev.txt                             // 验证数据集文件  
+│   ├── README.md                           // 数据说明.md  
+│   ├── test_nolabel.txt                    // A榜测试数据  
+│   └── train.txt                           // 训练数据集文件  
+├── demo.py                 // 演示脚本  
 ├── inference_model  
-│   ├── __model__  
-│   ├── per_model  
-│   └── persistables  
+│   ├── __model__           // 模型结构图（visualdl打开）  
+│   ├── per_model           // 预测模型参数  
+│   └── persistables        // 训练模型参数  
 ├── logs  
-│   └── train_1612239291.log  
+│   └── train_1612239291.log                // 日志文件  
 ├── net  
 │   ├── __init__.py  
-│   ├── network.py  
-├── README.md  
-├── requestments.txt  
+│   ├── network.py          // 网络模型代码  
+├── README.md               // 项目说明  
+├── requestments.txt        // 配置库  
 ├── result  
-├── test.py  
-├── train.py  
-├── tree.txt  
+│   ├── prediction          // 预测结果存放路径  
+│   │   ├── 1.predict.txt   // 预测结果1  
+│   │   ├── 2.predict.txt   // 预测结果2  
+            ...
+            ...
+            ...
+│   │   ├── n.predict.txt   // 预测结果n  
+│   ├── __model__.svg       // 模型结构图  
+│   ├── predict.file.zip    // 待提交压缩文件  
 └── utils  
     ├── __init__.py  
-    ├── process.py  
-    ├── reader.py  
-    └── vocabulary.py  
+    ├── process.py          // 创建词汇表  
+    ├── reader.py           // 数据读入程序  
+    └── vocabulary.py       // 数据格式化类  
+├── test.py                 // 验证程序  
+├── train.py                // 训练程序  
+
 
 ## 测试项目  
 ***
