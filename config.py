@@ -10,11 +10,12 @@ class RNA_Config:
         self.batch_size = 1  # 批大小
         self.epochs = 30  # 一共训练多少个轮次
         self.val_batch = 475  # 多少个batch做一次验证
-        self.best_dev_loss = 0.069  # 最低保存模型参数所需损失
+        self.best_dev_loss = 0.083  # 最低保存模型参数所需损失
 
         self.use_gpu = True  # 是否使用gpu
-        self.continue_train = True  # 是否加载前一次训练参数
+        self.continue_train = False  # 是否加载前一次训练参数
         self.add = True  # 是否添加增广数据
+        self.pre_training = False  # 是否采用预训练模型
 
         self.START = "<START>"  # 数据读取器相关参数
         self.STOP = "<STOP>"  # 数据读取器相关参数
@@ -34,7 +35,7 @@ class RNA_Config:
         self.test = "./data/test.txt"  # 自己生成的带标签测试集
         self.train_log = "./log/train"  # visualdl格式log保存路径
         self.result = "./result/prediction"  # 测试结果保存文件夹
-        self.params_dirname = "./inference_model"  # 模型文件存放文件夹
+        self.params_dirname = "./elmo_model"  # 模型文件存放文件夹
 
         # ============================ 学习率动态调整策略 ============================
         self.beta1 = 0.9  # 梯度下降所需参数1
