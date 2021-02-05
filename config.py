@@ -21,6 +21,14 @@ class RNA_Config:
         self.STOP = "<STOP>"  # 数据读取器相关参数
         self.UNK = "<UNK>"  # 数据读取器相关参数
 
+        # Elmo相关配置
+        self.use_elmo = True  # 是否使用elmo网络
+        self.use_bigru = False  # 是否使用GRU
+        self.cell_clip = 3.0
+        self.proj_clip = 3.0
+        self.init_bound = 0.1
+        self.bigru_num = 2
+
         # ============================ 网络模型参数 ============================
         self.dmodel = 128  # embedding数据维度
         self.layers = 8  # lstm层数
