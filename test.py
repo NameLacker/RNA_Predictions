@@ -115,4 +115,7 @@ if __name__ == '__main__':
     collocations = RNA_Config()  # 获取配置信息
     results = run_test(collocations)
     save_results(results)
+    print("Zip result...")
+    time.sleep(5)
     writeAllFileToZip("./result", "predict.file.zip")
+    print("Success zip result!")

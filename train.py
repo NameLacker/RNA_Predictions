@@ -96,7 +96,7 @@ def train():
     values = [value * collocations.learn_rate for value in collocations.values]
     learn_rate = fluid.layers.piecewise_decay(boundaries, values)
     # 优化方法
-    optimizer = optimization.adam(learn_rate)
+    optimizer = optimization.adam(learn_rate)  # TODO: 共有8个优化方法可供选择
     # 反向传播，计算梯度
     optimizer.minimize(avg_loss)
     exe.run(start_program)

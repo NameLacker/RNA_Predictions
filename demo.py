@@ -1,11 +1,16 @@
 """
 测试
 """
+import json
 import paddle
 import paddle.fluid as fluid
 
 from utils.reader import load_train_data
 from utils.process import process_vocabulary
+from net.network import Network
+from config import RNA_Config
+
+collocations = RNA_Config()
 
 
 def get_rna():
@@ -51,5 +56,18 @@ def parallel():
                 f.write("\n")
 
 
+def test():
+    network = Network(
+        None,
+        None,
+        dmodel=collocations.dmodel,
+        layers=collocations.layers,
+        dropout=collocations.dropout,
+    )
+    pass
+
+
 if __name__ == '__main__':
-    get_rna()
+    # get_rna()
+    # parallel()
+    test()

@@ -74,9 +74,15 @@ def load_train_data():
     assert os.path.exists(collocations.train_dataset_other)
     assert os.path.exists(collocations.dev_dataset)
 
-    train = read_data(collocations.train_dataset)
-    if collocations.add:
+    if collocations.add == 0:
+        print("Load original dataset...")
+        train = read_data(collocations.train_dataset)
+    elif collocations.add == 1:
         print("Load augmentation dataset...")
+        train = read_data(collocations.train_dataset_other)
+    if collocations.add == 2:
+        print("Load original and augmentation dataset...")
+        train = read_data(collocations.train_dataset)
         train1 = read_data(collocations.train_dataset_other)
         train.extend(train1)
     dev = read_data(collocations.dev_dataset)
