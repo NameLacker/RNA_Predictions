@@ -25,7 +25,6 @@
 ├── logs  
 │   └── train_1612239291.log       &#8195;         // 日志文件  
 ├── net  
-│   ├── __init__.py  
 │   ├── network.py          &#8195;     // 网络模型代码  
 ├── README.md               &#8195;     // 项目说明  
 ├── requestments.txt        &#8195;     // 配置库  
@@ -33,14 +32,13 @@
 │   ├── prediction          &#8195;     // 预测结果存放路径  
 │   │   ├── 1.predict.txt   &#8195;     // 预测结果1  
 │   │   ├── 2.predict.txt   &#8195;     // 预测结果2  
-            ...
-            ...
-            ...
+│   │   ├──      ...  
+│   │   ├──      ...  
+│   │   ├──      ...  
 │   │   ├── n.predict.txt   &#8195;     // 预测结果n  
 │   ├── __model__.svg       &#8195;     // 模型结构图  
 │   ├── predict.file.zip    &#8195;     // 待提交压缩文件  
 └── utils  
-    ├── __init__.py  
     ├── process.py          &#8195;     // 创建词汇表  
     ├── reader.py           &#8195;     // 数据读入程序  
     └── vocabulary.py       &#8195;     // 数据格式化类  
