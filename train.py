@@ -91,12 +91,7 @@ def train():
     # 构造数据读取器
     feeder = fluid.DataFeeder(place=place, feed_list=[seq, dot, y])
 
-    # 动态学习率
-    boundaries = [step * collocations.each_step for step in collocations.boundaries]
-    values = [value * collocations.learn_rate for value in collocations.values]
-    learn_rate = fluid.layers.piecewise_decay(boundaries, values)
-    # 优化方法
-    optimizer = optimization.adam(learn_rate)  # TODO: 共有8个优化方法可供选择
+    optimizer, learn_rate = optimization.optimizer()
     # 反向传播，计算梯度
     optimizer.minimize(avg_loss)
     exe.run(start_program)
@@ -148,6 +143,7 @@ def train():
             if train_iters % 10 == 0:
                 batch_loss = avg_batch_loss / 10
                 log_writer.add_scalar(tag='train/loss', step=train_iters, value=float(batch_loss))
+                log_writer.add_scalar(tag='train/learning_rate', step=train_iters, value=float(learning_rate))
                 logger.info("Epoch: {}, Step: {}, Loss: {:.8}, Learning_rate: {:.8}, Cost_time: {:.5}".
                             format(epoch_id, step_id+1, batch_loss, learning_rate, t))
                 avg_batch_loss = 0.
@@ -160,8 +156,7 @@ def train():
                     loss, pred = exe.run(test_program,
                                          feed=feeder.feed(data),
                                          fetch_list=[avg_loss.name, predictions.name],
-                                         return_numpy=False
-                                         )
+                                         return_numpy=False)
                     loss = np.array(loss)
                     val_results.append(loss[0])
                 val_loss = sum(val_results) / len(val_results)

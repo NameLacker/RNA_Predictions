@@ -56,18 +56,6 @@ def parallel():
                 f.write("\n")
 
 
-def test():
-    network = Network(
-        None,
-        None,
-        dmodel=collocations.dmodel,
-        layers=collocations.layers,
-        dropout=collocations.dropout,
-    )
-    pass
-
-
 if __name__ == '__main__':
     # get_rna()
-    # parallel()
-    test()
+    parallel()

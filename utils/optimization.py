@@ -5,6 +5,16 @@ from config import RNA_Config
 collocations = RNA_Config()
 
 
+def optimizer():
+    # 动态学习率
+    boundaries = [step * collocations.each_step for step in collocations.boundaries]
+    values = [value * collocations.learn_rate for value in collocations.values]
+    learn_rate = fluid.layers.piecewise_decay(boundaries, values)
+    # 优化方法
+    optimize = adam(learn_rate)  # TODO: 共有8个优化方法可供选择
+    return optimize, learn_rate
+
+
 def sgd(learning_rate):
     """
     该接口实现随机梯度下降算法的优化器

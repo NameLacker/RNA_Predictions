@@ -9,12 +9,12 @@ class RNA_Config:
         # ============================ 训练参数 ============================
         self.buf_size = 1000  # 缓冲区保存的数据个数
         self.batch_size = 1  # 批大小
-        self.epochs = 30  # 一共训练多少个轮次
+        self.epochs = 12  # 一共训练多少个轮次
         self.val_batch = 475  # 多少个batch做一次验证
         self.best_dev_loss = 0.068  # 最低保存模型参数所需损失
 
         self.use_gpu = True  # 是否使用gpu
-        self.add = 1  # 是否添加增广数据: 0--原数据, 1--预处理数据, 2--两者共用
+        self.add = 2  # 是否添加增广数据: 0--原数据, 1--预处理数据, 2--两者共用
 
         self.continue_train = False  # TODO: 是否加载前一次训练参数
 
@@ -23,8 +23,8 @@ class RNA_Config:
         self.UNK = "<UNK>"  # 数据读取器相关参数
 
         # ============================ 网络模型参数 ============================
-        self.dmodel = 256  # embedding数据维度 TODO: 最优配置 128
-        self.layers = 7  # lstm层数 TODO: 最优配置 8
+        self.dmodel = 128  # embedding数据维度 TODO: 最优配置 128
+        self.layers = 10  # lstm层数 TODO: 最优配置 8
         self.dropout = 0.15  # 模型参数丢弃概率
 
         # Elmo相关配置
@@ -54,6 +54,6 @@ class RNA_Config:
         self.epsilon = 1e-08  # 梯度下降所需参数3
 
         self.learn_rate = 0.0001  # 初始学习率
-        self.each_step = 5000  # 每隔多少步调整学习率
-        self.boundaries = [1, 3, 6, 9, 12, 15, 18, 21, 24, 27]  # 经过多少个epoch降低学习率
+        self.each_step = 4725  # 每隔多少步调整学习率
+        self.boundaries = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  # 经过多少个epoch降低学习率
         self.values = [1., 0.66, 0.33, 0.1, 0.066, 0.033, 0.01, 0.005, 0.001, 0.0001, 0.00001]  # 不同阶段学习率
