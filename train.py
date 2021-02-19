@@ -99,6 +99,8 @@ def train():
     # ============================ 保存训练日志及模型参数 ==========================
     # 模型保存路径
     params_dirname = collocations.params_dirname
+    if not os.path.exists(params_dirname):
+        os.makedirs(params_dirname)
 
     # 训练日志保存
     log_name = str(int(time.time()))
@@ -109,7 +111,7 @@ def train():
     if collocations.continue_train:
         logger.info("Loading model......")
         # 加载上一次训练模型参数
-        fluid.io.load_persistables(executor=exe, dirname=params_dirname,
+        fluid.io.load_persistables(executor=exe, dirname=os.path.join(params_dirname, "0.07186"),  # TODO: 模型保存目录
                                    main_program=main_program, filename="persistables")
 
     avg_batch_loss = 0.  # 最小loss
@@ -165,11 +167,15 @@ def train():
 
                 # =============================== 保存模型参数 ===============================
                 if val_loss < collocations.best_dev_loss:
+                    savename = "{:.5}".format(val_loss)
+                    savename = os.path.join(params_dirname, savename)
+                    if not os.path.exists(savename):
+                        os.makedirs(savename)
                     collocations.best_dev_loss = val_loss
                     logger.info("Save medol...")
-                    fluid.io.save_persistables(executor=exe, dirname=params_dirname,
+                    fluid.io.save_persistables(executor=exe, dirname=savename,
                                                main_program=main_program, filename="persistables")
-                    fluid.io.save_inference_model(params_dirname, ['seq', 'dot'], [predictions], exe,
+                    fluid.io.save_inference_model(savename, ['seq', 'dot'], [predictions], exe,
                                                   params_filename="per_model", model_filename="__model__")
 
 

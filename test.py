@@ -117,5 +117,5 @@ if __name__ == '__main__':
     save_results(results)
     print("Zip result...")
     time.sleep(5)
-    writeAllFileToZip("./result", "predict.file.zip")
+    writeAllFileToZip("./result", "predict.files.zip")
     print("Success zip result!")
