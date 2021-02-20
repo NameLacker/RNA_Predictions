@@ -24,6 +24,8 @@
 │   └── persistables   &#8195;     // 训练模型参数  
 ├── logs  
 │   └── train_1612239291.log       &#8195;         // 日志文件  
+├── max_models         &#8195;    // 最优模型存放目录   
+│   └── 4.635          &#8195;         // 最优模型  
 ├── net  
 │   ├── network.py          &#8195;     // 网络模型代码  
 ├── README.md               &#8195;     // 项目说明  
@@ -75,28 +77,49 @@
         <tr>
             <th>Embedding数据维度</th>
             <th>Lstm 层数</th>
-            <th>Dropout概率</th>
             <th>Loss</th>
+            <th>Step</th>
+            <th>Score</th>
+            <th>rmsd_avg</th>
+            <th>rmsd_std</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <th>128</th>
             <th>8</th>
-            <th>0.15</th>
             <th>0.068</th>
+            <th>None</th>
+            <th>4.293</th>
+            <th>0.233</th>
+            <th>0.041</th>
+        </tr>
+        <tr>
+            <th>128</th>
+            <th>6</th>
+            <th>0.075</th>
+            <th>4270</th>
+            <th>4.534</th>
+            <th>0.221</th>
+            <th>0.046</th>
+        </tr>
+        <tr>
+            <th>128</th>
+            <th>6</th>
+            <th>0.076</th>
+            <th>4750</th>
+            <th>4.562</th>
+            <th>0.219</th>
+            <th>0.048</th>
         </tr>
         <tr>
             <th>256</th>
-            <th>8</th>
-            <th>0.15</th>
-            <th>0.078697</th>
-        </tr>
-        <tr>
-            <th>512</th>
-            <th>16</th>
-            <th>0.15</th>
-            <th>None</th>
+            <th>6</th>
+            <th>0.072</th>
+            <th>8550</th>
+            <th>4.635</th>
+            <th>0.216</th>
+            <th>0.05</th>
         </tr>
     </tbody>
 </table>
