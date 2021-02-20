@@ -52,7 +52,7 @@
 ***
 * 运行`python train.py`开始训练，训练参数会保存在`./inference_model`目录下  
 * 运行`visualdl --logdir ./log post 8040`，再在浏览器打开`http://localhost:8040/`可以查看训练进度  
-* 运行`python test.py`产生测试结果，测试结果保存在`./result`目录下  
+* 运行`python test.py`产生测试结果，测试结果保存在`./result`目录下，同时生成`predict.files.zip`作为提交文件  
 
 ## 模型
 ***
