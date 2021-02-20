@@ -5,10 +5,8 @@
 革命尚未成功，同志仍需努力。  
 加油，奥利给！！！
 
-## 项目所需依赖库
+## 项目目录树
 ***
-运行`pip install -r requestments -i https://pypi.douban.com/simple`下载安装所需依赖  
-项目目录树：  
 .  
 ├── config.py           &#8195;    // 配置文件  
 ├── data  
@@ -48,8 +46,9 @@
 ├── train.py                &#8195;     // 训练程序  
 
 
-## 项目训练、测试  
+## 项目依赖下载，模型训练、测试  
 ***
+* 运行`pip install -r requestments -i https://pypi.douban.com/simple`下载安装所需依赖  
 * 运行`python train.py`开始训练，训练参数会保存在`./inference_model`目录下  
 * 运行`visualdl --logdir ./log post 8040`，再在浏览器打开`http://localhost:8040/`可以查看训练进度  
 * 运行`python test.py`产生测试结果，测试结果保存在`./result`目录下，同时生成`predict.files.zip`作为提交文件  
