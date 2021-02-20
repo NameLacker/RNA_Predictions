@@ -35,7 +35,7 @@ def run_test(args):
     )
 
     exe = fluid.Executor(place)
-    fluid.io.load_inference_model(args.params_dirname, exe, params_filename="per_model")
+    fluid.io.load_inference_model(args.test_dirname, exe, params_filename="per_model")
     test_reader = fluid.io.batch(
         reader_creator(test_data, seq_vocab, bracket_vocab, test=True),
         batch_size=args.batch_size)

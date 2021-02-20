@@ -45,7 +45,9 @@ class RNA_Config:
         self.test = "./data/test.txt"  # 自己生成的带标签测试集
         self.train_log = "./log/train"  # visualdl格式log保存路径
         self.result = "./result/prediction"  # 测试结果保存文件夹
-        self.params_dirname = "./inference_model/1613723137"  # 模型文件存放文件夹
+        self.params_dirname = "./inference_model"  # 模型文件存放文件夹
+
+        self.test_dirname = "./inference_model/1613718593"  # 测试所用模型参数存放路径
 
         # ============================ 学习率动态调整策略 ============================
         self.beta1 = 0.9  # 梯度下降所需参数1
