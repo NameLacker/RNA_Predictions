@@ -10,13 +10,13 @@ class RNA_Config:
         self.buf_size = 1000  # 缓冲区保存的数据个数
         self.batch_size = 1  # 批大小
         self.epochs = 12  # 一共训练多少个轮次
-        self.val_batch = 475  # 多少个batch做一次验证
+        self.val_batch = 1000  # 多少个batch做一次验证
         self.best_dev_loss = 0.08  # 保存模型参数所需最高损失
 
         self.use_gpu = True  # 是否使用gpu
         self.add = 0  # 是否添加增广数据: 0--原数据, 1--预处理数据, 2--两者共用
 
-        self.continue_train = True  # TODO: 是否加载前一次训练参数
+        self.continue_train = False  # TODO: 是否加载前一次训练参数
 
         self.START = "<START>"  # 数据读取器相关参数
         self.STOP = "<STOP>"  # 数据读取器相关参数
@@ -55,6 +55,6 @@ class RNA_Config:
         self.epsilon = 1e-08  # 梯度下降所需参数3
 
         self.learn_rate = 0.0001  # 初始学习率
-        self.each_step = 475  # 每隔多少步调整学习率
+        self.each_step = 1000  # 每隔多少步调整学习率
         self.boundaries = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  # 经过多少个epoch降低学习率
         self.values = [1., 0.66, 0.33, 0.1, 0.066, 0.033, 0.01, 0.005, 0.001, 0.0001, 0.00001]  # 不同阶段学习率

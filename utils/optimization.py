@@ -70,7 +70,8 @@ def adam(learning_rate):
     return fluid.optimizer.Adam(learning_rate=learning_rate,
                                 beta1=collocations.beta1,
                                 beta2=collocations.beta2,
-                                epsilon=collocations.epsilon)
+                                epsilon=collocations.epsilon,
+                                regularization=fluid.regularizer.L2Decay(0.0001))
 
 
 def adamax(learning_rate):

@@ -47,15 +47,17 @@ class Network(Layer):
             emb_dot = fluid.layers.fc(input=input_dot_feature, size=self.model_size)
 
         emb = paddle.fluid.layers.concat(input=[emb_seq, emb_dot], axis=1)
-        emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu")
+        emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu", name="1_fc")
+        max_num = 3
         for _ in range(self.layers):
-            emb = paddle.fluid.layers.fc(emb, size=self.model_size * 4)
+            emb = paddle.fluid.layers.fc(emb, size=self.model_size * 4, name="{}_fc".format(1 + _*3 + 1))
             fwd, cell = paddle.fluid.layers.dynamic_lstm(input=emb, size=self.model_size * 4, use_peepholes=True,
-                                                         is_reverse=False)
+                                                         is_reverse=False, name="{}_0_lstm".format(1 + _*3 + 2))
             back, cell = paddle.fluid.layers.dynamic_lstm(input=emb, size=self.model_size * 4, use_peepholes=True,
-                                                          is_reverse=True)
+                                                          is_reverse=True, name="{}_1_lstm".format(1 + _*3 + 2))
             emb = paddle.fluid.layers.concat(input=[fwd, back], axis=1)
-            emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu")
-        ff_out = paddle.fluid.layers.fc(emb, size=2, act="relu")
-        soft_out = paddle.fluid.layers.softmax(ff_out, axis=1)
+            emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu", name="{}_fc".format(1 + _*3 + 3))
+            max_num = 1 + _*3 + 3
+        ff_out = paddle.fluid.layers.fc(emb, size=2, act="relu", name="{}_fc".format(max_num + 1))
+        soft_out = paddle.fluid.layers.softmax(ff_out, axis=1, name="{}_softmax".format(max_num + 2))
         return soft_out[:, 0]

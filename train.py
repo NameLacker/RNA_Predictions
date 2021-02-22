@@ -90,6 +90,8 @@ def train():
     test_program = main_program.clone(for_test=True)
     # 构造数据读取器
     feeder = fluid.DataFeeder(place=place, feed_list=[seq, dot, y])
+    # 构造直方图
+    params = [param.name for param in fluid.default_main_program().all_parameters()]
 
     optimizer, learn_rate = optimization.optimizer()
     # 反向传播，计算梯度
@@ -148,6 +150,10 @@ def train():
                             format(epoch_id, step_id+1, batch_loss, learning_rate, t))
                 avg_batch_loss = 0.
                 t = 0.
+
+                for param in params:
+                    values = fluid.global_scope().find_var(param).get_tensor()
+                    log_writer.add_histogram(tag="train/{}".format(param), step=train_iters, values=values)
 
             # =============================== 验证程序 ===============================
             if train_iters % collocations.val_batch == 0:
