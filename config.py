@@ -25,7 +25,7 @@ class RNA_Config:
         # ========================== 网络模型参数 ===========================
         self.dmodel = 256  # embedding数据维度 TODO: 最优配置 128
         self.layers = 6  # lstm层数 TODO: 最优配置 6
-        self.dropout = 0.15  # 模型参数丢弃概率
+        self.dropout = 0.2  # 模型参数丢弃概率
 
         # Elmo相关配置
         self.use_elmo = False  # 是否使用Elmo网络

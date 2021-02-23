@@ -74,6 +74,7 @@
 <table>
     <thead>
         <tr>
+            <th>序号</th>
             <th>Embedding数据维度</th>
             <th>Lstm 层数</th>
             <th>Loss</th>
@@ -81,19 +82,25 @@
             <th>Score</th>
             <th>rmsd_avg</th>
             <th>rmsd_std</th>
+            <th>时间</th>
+            <th>备注</th>
         </tr>
     </thead>
     <tbody>
         <tr>
+            <th>1</th>
             <th>128</th>
             <th>8</th>
             <th>0.068</th>
             <th>None</th>
-            <th>4.293</th>
+            <th>4.296</th>
             <th>0.233</th>
             <th>0.041</th>
+            <th>2021-02-19 09:01</th>
+            <th>None</th>
         </tr>
         <tr>
+            <th>2</th>
             <th>128</th>
             <th>6</th>
             <th>0.075</th>
@@ -101,8 +108,11 @@
             <th>4.534</th>
             <th>0.221</th>
             <th>0.046</th>
+            <th>2021-02-19 09:42</th>
+            <th>None</th>
         </tr>
         <tr>
+            <th>3</th>
             <th>128</th>
             <th>6</th>
             <th>0.076</th>
@@ -110,8 +120,11 @@
             <th>4.562</th>
             <th>0.219</th>
             <th>0.048</th>
+            <th>2021-02-19 10:06</th>
+            <th>None</th>
         </tr>
         <tr>
+            <th>4</th>
             <th>256</th>
             <th>6</th>
             <th>0.072</th>
@@ -119,6 +132,20 @@
             <th>4.635</th>
             <th>0.216</th>
             <th>0.05</th>
+            <th>2021-02-20 09:05</th>
+            <th>None</th>
+        </tr>
+        <tr>
+            <th>5</th>
+            <th>256</th>
+            <th>6</th>
+            <th>0.071</th>
+            <th>4270</th>
+            <th>4.595</th>
+            <th>0.218</th>
+            <th>0.049</th>
+            <th>2021-02-22 09:45</th>
+            <th>续4的模型参数继续训练</th>
         </tr>
     </tbody>
 </table>

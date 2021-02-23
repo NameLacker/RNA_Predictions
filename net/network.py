@@ -58,6 +58,7 @@ class Network(Layer):
             emb = paddle.fluid.layers.concat(input=[fwd, back], axis=1)
             emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu", name="{}_fc".format(1 + _*3 + 3))
             max_num = 1 + _*3 + 3
+        emb = dropout(emb)
         ff_out = paddle.fluid.layers.fc(emb, size=2, act="relu", name="{}_fc".format(max_num + 1))
         soft_out = paddle.fluid.layers.softmax(ff_out, axis=1, name="{}_softmax".format(max_num + 2))
         return soft_out[:, 0]
