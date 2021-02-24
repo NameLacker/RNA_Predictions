@@ -28,14 +28,12 @@ def elmo_encoder(x_emb):
 
     num_layers = len(fw_hiddens_ori)
     token_embeddings = fluid.layers.concat(input=[x_emb, x_emb], axis=1)
-    # token_embeddings.stop_gradient = stop_gradient  # 是否停止梯度更新
     concate_embeddings = [token_embeddings]
 
     for index in range(num_layers):
         embedding = fluid.layers.concat(
             input=[fw_hiddens_ori[index], bw_hiddens_ori[index]], axis=1)
         embedding = dropout(embedding)
-        # embedding.stop_gradient = stop_gradient  # 是否停止梯度更新
         concate_embeddings.append(embedding)
     weighted_emb = weight_layers(concate_embeddings)
     return weighted_emb
@@ -79,7 +77,6 @@ def encoder_wapper(x_emb, emb_size, init_hidden=None, init_cell=None):
         rnn_out_ori = rnn_out
         if i > 0:
             rnn_out = rnn_out + rnn_input
-        # rnn_out.stop_gradient = stop_gradient  # 是否停止梯度更新
         rnn_outs.append(rnn_out)
         rnn_outs_ori.append(rnn_out_ori)
     return rnn_outs, rnn_outs_ori

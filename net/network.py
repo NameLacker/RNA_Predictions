@@ -37,7 +37,7 @@ class Network(Layer):
 
             if use_bigru:
                 print("Use bigru...")
-                for i in range(self.bigru_num):
+                for i in range(bigru_num):
                     bigru_seq_output = bigru_layer(input_seq_feature)
                     input_seq_feature = bigru_seq_output
                     bigru_dot_output = bigru_layer(input_dot_feature)
@@ -45,6 +45,10 @@ class Network(Layer):
 
             emb_seq = fluid.layers.fc(input=input_seq_feature, size=self.model_size)
             emb_dot = fluid.layers.fc(input=input_dot_feature, size=self.model_size)
+            if stop_gradient:
+                # 使前面的梯度停止更新
+                emb_seq.stop_gradient = True
+                emb_dot.stop_gradient = True
 
         emb = paddle.fluid.layers.concat(input=[emb_seq, emb_dot], axis=1)
         emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu", name="1_fc")
@@ -58,7 +62,6 @@ class Network(Layer):
             emb = paddle.fluid.layers.concat(input=[fwd, back], axis=1)
             emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu", name="{}_fc".format(1 + _*3 + 3))
             max_num = 1 + _*3 + 3
-        emb = dropout(emb)
         ff_out = paddle.fluid.layers.fc(emb, size=2, act="relu", name="{}_fc".format(max_num + 1))
         soft_out = paddle.fluid.layers.softmax(ff_out, axis=1, name="{}_softmax".format(max_num + 2))
         return soft_out[:, 0]

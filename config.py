@@ -10,22 +10,22 @@ class RNA_Config:
         self.buf_size = 1000  # 缓冲区保存的数据个数
         self.batch_size = 1  # 批大小
         self.epochs = 12  # 一共训练多少个轮次
-        self.val_batch = 1000  # 多少个batch做一次验证
-        self.best_dev_loss = 0.08  # 保存模型参数所需最高损失
+        self.val_batch = 475  # 多少个batch做一次验证
+        self.best_dev_loss = 0.085  # 保存模型参数所需最高损失
 
         self.use_gpu = True  # 是否使用gpu
         self.add = 0  # 是否添加增广数据: 0--原数据, 1--预处理数据, 2--两者共用
 
-        self.continue_train = False  # TODO: 是否加载前一次训练参数
+        self.continue_train = True  # TODO: 是否加载前一次训练参数
 
         self.START = "<START>"  # 数据读取器相关参数
         self.STOP = "<STOP>"  # 数据读取器相关参数
         self.UNK = "<UNK>"  # 数据读取器相关参数
 
         # ========================== 网络模型参数 ===========================
-        self.dmodel = 256  # embedding数据维度 TODO: 最优配置 128
+        self.dmodel = 256  # embedding数据维度 TODO: 最优配置 256
         self.layers = 6  # lstm层数 TODO: 最优配置 6
-        self.dropout = 0.2  # 模型参数丢弃概率
+        self.dropout = 0.15  # 模型参数丢弃概率
 
         # Elmo相关配置
         self.use_elmo = False  # 是否使用Elmo网络
@@ -47,14 +47,14 @@ class RNA_Config:
         self.result = "./result/prediction"  # 测试结果保存文件夹
         self.params_dirname = "./inference_model"  # 模型文件存放文件夹
 
-        self.test_dirname = "./inference_model/1613957122"  # 测试所用模型参数存放路径
+        self.test_dirname = "./max_models/4.635"  # 测试所用模型参数存放路径
 
         # ======================== 学习率动态调整策略 =========================
         self.beta1 = 0.9  # 梯度下降所需参数1
         self.beta2 = 0.999  # 梯度下降所需参数2
         self.epsilon = 1e-08  # 梯度下降所需参数3
 
-        self.learn_rate = 0.0001  # 初始学习率
+        self.learn_rate = 0.001  # 初始学习率
         self.each_step = 1000  # 每隔多少步调整学习率
-        self.boundaries = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  # 经过多少个epoch降低学习率
+        self.boundaries = [1, 3, 5, 8, 10, 13, 15, 17, 19, 22]  # 经过多少个epoch降低学习率
         self.values = [1., 0.66, 0.33, 0.1, 0.066, 0.033, 0.01, 0.005, 0.001, 0.0001, 0.00001]  # 不同阶段学习率
