@@ -25,8 +25,10 @@ class Network(Layer):
         :param dot:
         :return:
         """
-        emb_seq = paddle.fluid.embedding(seq, size=(self.sequence_vocabulary.size, self.model_size), is_sparse=True)
-        emb_dot = paddle.fluid.embedding(dot, size=(self.bracket_vocabulary.size, self.model_size), is_sparse=True)
+        emb_seq = paddle.fluid.embedding(seq, size=(self.sequence_vocabulary.size, self.model_size), is_sparse=True,
+                                         param_attr=fluid.initializer.Normal(loc=0.0, scale=2.0))
+        emb_dot = paddle.fluid.embedding(dot, size=(self.bracket_vocabulary.size, self.model_size), is_sparse=True,
+                                         param_attr=fluid.initializer.Normal(loc=0.0, scale=2.0))
 
         if use_elmo:
             emb_seq_elmo = elmo_encoder(emb_seq)
@@ -56,9 +58,11 @@ class Network(Layer):
         for _ in range(self.layers):
             emb = paddle.fluid.layers.fc(emb, size=self.model_size * 4, name="{}_fc".format(1 + _*3 + 1))
             fwd, cell = paddle.fluid.layers.dynamic_lstm(input=emb, size=self.model_size * 4, use_peepholes=True,
-                                                         is_reverse=False, name="{}_0_lstm".format(1 + _*3 + 2))
+                                                         is_reverse=False, name="{}_0_lstm".format(1 + _*3 + 2),
+                                                         param_attr=fluid.initializer.Normal(loc=0.0, scale=2.0))
             back, cell = paddle.fluid.layers.dynamic_lstm(input=emb, size=self.model_size * 4, use_peepholes=True,
-                                                          is_reverse=True, name="{}_1_lstm".format(1 + _*3 + 2))
+                                                          is_reverse=True, name="{}_1_lstm".format(1 + _*3 + 2),
+                                                          param_attr=fluid.initializer.Normal(loc=0.0, scale=2.0))
             emb = paddle.fluid.layers.concat(input=[fwd, back], axis=1)
             emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu", name="{}_fc".format(1 + _*3 + 3))
             max_num = 1 + _*3 + 3

@@ -9,6 +9,7 @@ from utils.reader import load_train_data
 from utils.process import process_vocabulary
 from net.network import Network
 from config import RNA_Config
+from utils.reader import read_data
 
 collocations = RNA_Config()
 
@@ -56,6 +57,18 @@ def parallel():
                 f.write("\n")
 
 
+def read_size():
+    dataset = read_data("./data/test_nolabel.txt", True)
+    max = 0
+    for data in dataset:
+        size = len(data["sequence"])
+        if size > max:
+            max = size
+    print(max)
+
+
 if __name__ == '__main__':
     # get_rna()
-    parallel()
+    # parallel()
+    read_size()
+    pass
