@@ -70,5 +70,5 @@ def read_size():
 if __name__ == '__main__':
     # get_rna()
     # parallel()
-    read_size()
+    # read_size()
     pass

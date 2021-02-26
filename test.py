@@ -38,7 +38,7 @@ def run_test(args):
     fluid.io.load_inference_model(args.test_dirname, exe, params_filename="per_model")
     test_reader = fluid.io.batch(
         reader_creator(test_data, seq_vocab, bracket_vocab, test=True),
-        batch_size=args.batch_size)
+        batch_size=args.test_size)
 
     seq = fluid.data(name="seq", shape=[None], dtype="int64", lod_level=1)
     dot = fluid.data(name="dot", shape=[None], dtype="int64", lod_level=1)

@@ -53,19 +53,15 @@ class Network(Layer):
                 emb_dot.stop_gradient = True
 
         emb = paddle.fluid.layers.concat(input=[emb_seq, emb_dot], axis=1)
-        emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu", name="1_fc")
-        max_num = 3
+        emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu")
         for _ in range(self.layers):
-            emb = paddle.fluid.layers.fc(emb, size=self.model_size * 4, name="{}_fc".format(1 + _*3 + 1))
+            emb = paddle.fluid.layers.fc(emb, size=self.model_size * 4)
             fwd, cell = paddle.fluid.layers.dynamic_lstm(input=emb, size=self.model_size * 4, use_peepholes=True,
-                                                         is_reverse=False, name="{}_0_lstm".format(1 + _*3 + 2),
-                                                         param_attr=fluid.initializer.Normal(loc=0.0, scale=2.0))
+                                                         is_reverse=False)
             back, cell = paddle.fluid.layers.dynamic_lstm(input=emb, size=self.model_size * 4, use_peepholes=True,
-                                                          is_reverse=True, name="{}_1_lstm".format(1 + _*3 + 2),
-                                                          param_attr=fluid.initializer.Normal(loc=0.0, scale=2.0))
+                                                          is_reverse=True)
             emb = paddle.fluid.layers.concat(input=[fwd, back], axis=1)
-            emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu", name="{}_fc".format(1 + _*3 + 3))
-            max_num = 1 + _*3 + 3
-        ff_out = paddle.fluid.layers.fc(emb, size=2, act="relu", name="{}_fc".format(max_num + 1))
-        soft_out = paddle.fluid.layers.softmax(ff_out, axis=1, name="{}_softmax".format(max_num + 2))
+            emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu")
+        ff_out = paddle.fluid.layers.fc(emb, size=2, act="relu")
+        soft_out = paddle.fluid.layers.softmax(ff_out, axis=1)
         return soft_out[:, 0]
