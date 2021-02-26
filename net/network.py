@@ -18,6 +18,18 @@ class Network(Layer):
         self.model_size = dmodel
         self.layers = layers
 
+    def initializer_w(self):
+        end_train = True
+        if end_gradient:
+            end_train = False
+        return fluid.ParamAttr(trainable=end_train)
+
+    def initializer_b(self):
+        end_train = True
+        if end_gradient:
+            end_train = False
+        return fluid.ParamAttr(trainable=end_train)
+
     def forward(self, seq, dot):
         """
         Forword 前馈神经网络
@@ -53,15 +65,22 @@ class Network(Layer):
                 emb_dot.stop_gradient = True
 
         emb = paddle.fluid.layers.concat(input=[emb_seq, emb_dot], axis=1)
-        emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu")
+        emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu",
+                                     param_attr=self.initializer_w(), bias_attr=self.initializer_b())
         for _ in range(self.layers):
-            emb = paddle.fluid.layers.fc(emb, size=self.model_size * 4)
+            emb = paddle.fluid.layers.fc(emb, size=self.model_size * 4,
+                                     param_attr=self.initializer_w(), bias_attr=self.initializer_b())
             fwd, cell = paddle.fluid.layers.dynamic_lstm(input=emb, size=self.model_size * 4, use_peepholes=True,
-                                                         is_reverse=False)
+                                                         is_reverse=False, param_attr=self.initializer_w(),
+                                                         bias_attr=self.initializer_b())
             back, cell = paddle.fluid.layers.dynamic_lstm(input=emb, size=self.model_size * 4, use_peepholes=True,
-                                                          is_reverse=True)
+                                                          is_reverse=True, param_attr=self.initializer_w(),
+                                                          bias_attr=self.initializer_b())
             emb = paddle.fluid.layers.concat(input=[fwd, back], axis=1)
-            emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu")
-        ff_out = paddle.fluid.layers.fc(emb, size=2, act="relu")
+            emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu",
+                                     param_attr=self.initializer_w(), bias_attr=self.initializer_b())
+        emb = dropout(emb)
+        ff_out = paddle.fluid.layers.fc(emb, size=2, act="relu",
+                                     param_attr=self.initializer_w(), bias_attr=self.initializer_b())
         soft_out = paddle.fluid.layers.softmax(ff_out, axis=1)
         return soft_out[:, 0]

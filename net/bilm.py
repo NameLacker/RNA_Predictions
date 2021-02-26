@@ -6,6 +6,7 @@ collocations = RNA_Config()
 
 model_size = collocations.dmodel
 stop_gradient = collocations.pre_training
+end_gradient = collocations.end_training
 use_elmo = collocations.use_elmo
 use_bigru = collocations.use_bigru
 dropout_rate = collocations.dropout

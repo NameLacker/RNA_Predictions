@@ -29,9 +29,10 @@ class RNA_Config:
         self.dropout = 0.15  # 模型参数丢弃概率
 
         # Elmo相关配置
-        self.use_elmo = False  # 是否使用Elmo网络
-        self.pre_training = False  # 是否固定Elmo预训练模型参数
-        self.use_bigru = False  # 是否使用GRU
+        self.use_elmo = True  # 是否使用Elmo网络
+        self.pre_training = False  # 是否停止Elmo段模型参数更新
+        self.end_training = False  # 是否停止后续网络段模型参数更新
+        self.use_bigru = True  # 是否使用GRU
         self.cell_clip = 3.0
         self.proj_clip = 3.0
         self.init_bound = 0.1
