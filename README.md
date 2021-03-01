@@ -165,4 +165,4 @@
 
 ## 当前模型结构
 ***  
-![model](https://github.com/NameLacker/RNA_Prediction/blob/master/result/__model__.svg)
+![model](https://gitee.com/nameLacker/RNA_Prediction/blob/master/result/__model__.svg)
