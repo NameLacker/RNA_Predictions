@@ -71,7 +71,7 @@
 
 ## 不同参数下的验证结果
 ***
-<table>
+<table align="center">
     <thead>
         <tr>
             <th>序号</th>
