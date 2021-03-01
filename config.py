@@ -8,14 +8,14 @@ class RNA_Config:
     def __init__(self):
         # ============================ 训练参数 ============================
         self.buf_size = 2000  # 缓冲区保存的数据个数
-        self.batch_size = 4  # 批大小
+        self.batch_size = 1  # 批大小
         self.test_size = 1  # 测试的批大小
         self.epochs = 50  # 一共训练多少个轮次
         self.val_batch = 4750 // self.batch_size  # 多少个batch做一次验证
         self.best_dev_loss = 0.08  # 保存模型参数所需最高损失
 
         self.use_gpu = True  # 是否使用gpu
-        self.add = 0  # 是否添加增广数据: 0--原数据, 1--预处理数据, 2--两者共用
+        self.add = 1  # 是否添加增广数据: 0--原数据, 1--预处理数据, 2--两者共用
 
         self.continue_train = True  # TODO: 是否加载前一次训练参数
 
@@ -29,8 +29,8 @@ class RNA_Config:
         self.dropout = 0.15  # 模型参数丢弃概率
 
         # Elmo相关配置
-        self.use_elmo = True  # 是否使用Elmo网络
-        self.pre_training = False  # 是否停止Elmo段模型参数更新
+        self.use_elmo = False  # 是否使用Elmo网络
+        self.pre_training = True  # 是否停止Elmo段模型参数更新
         self.end_training = False  # 是否停止后续网络段模型参数更新
         self.use_bigru = True  # 是否使用GRU
         self.cell_clip = 3.0
@@ -47,9 +47,11 @@ class RNA_Config:
         self.test = "./data/test.txt"  # 自己生成的带标签测试集
         self.train_log = "./log/train"  # visualdl格式log保存路径
         self.result = "./result/prediction"  # 测试结果保存文件夹
-        self.params_dirname = "./inference_model"  # 模型文件存放文件夹
+        self.save_dirname = "./inference_model"  # 模型文件存放文件夹
 
-        self.test_dirname = "./inference_model/1614302546"  # 测试所用模型参数存放路径
+        self.params_dirname = "./inference_model/"  # 模型文件加载文件夹
+
+        self.test_dirname = "./inference_mdoel/"  # 测试所用模型参数存放路径
 
         # ======================== 学习率动态调整策略 =========================
         self.beta1 = 0.9  # 梯度下降所需参数1

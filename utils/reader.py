@@ -55,15 +55,11 @@ def reader_creator(data,
             dot = x["structure"]
             seq = [sequence_vocabulary.index(x) for x in list(seq)]
             dot = [bracket_vocabulary.index(x) for x in list(dot)]
-            if not test:
-                seq.extend([0 for i in range(500 - len(seq))])
-                dot.extend([0 for i in range(500 - len(dot))])
             sequence = np.array(seq)
             structure = np.array(dot)
             if not test:
                 LP_v_unpaired_prob = x["p_unpaired"]
                 prob = [x for x in LP_v_unpaired_prob]
-                prob.extend([0 for i in range(500 - len(prob))])
                 LP_v_unpaired_prob = np.array(prob)
                 yield sequence, structure, LP_v_unpaired_prob
             else:
