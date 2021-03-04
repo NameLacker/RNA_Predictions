@@ -175,11 +175,11 @@ def train():
                 val_loss = sum(val_results) / len(val_results)
                 log_writer.add_scalar(tag='test/loss', step=train_iters, value=val_loss)
                 log_writer.add_scalar(tag='test/rmsd_avg', step=train_iters, value=rmsd_avg)
-                logger.info("Epoch: {}, Test Loss: {}, Test Rmsd_avg: {:.8}, Test Rmsd_std: {:.8}"
-                            .format(epoch_id, val_loss, rmsd_avg, rmsd_std))
+                log_writer.add_scalar(tag='test/rmsd_std', step=train_iters, value=rmsd_std)
+                logger.info("Epoch: {}, Test Loss: {}, Test Rmsd_avg: {:.8}, Test Rmsd_std: {:.8}".format(epoch_id, val_loss, rmsd_avg, rmsd_std))
 
                 # =============================== 保存模型参数 ===============================
-                if (rmsd_avg < collocations.best_dev_rmsd and val_loss < collocations.best_dev_loss) or (step_id == 0 and epoch_id > 0):
+                if rmsd_avg < collocations.best_dev_rmsd and val_loss < collocations.best_dev_loss:
                     savename = "{}".format(int(time.time()))
                     savename = os.path.join(collocations.save_dirname, savename)
                     if not os.path.exists(savename):
@@ -190,6 +190,16 @@ def train():
                                                main_program=main_program)
                     fluid.io.save_inference_model(savename, ['seq', 'dot'], [predictions], exe,
                                                   params_filename="per_model", model_filename="__model__")
+        # =============================== 一轮训练结束，保存模型参数 ===============================
+        savename = "end{}".format(int(time.time()))
+        savename = os.path.join(collocations.save_dirname, savename)
+        if not os.path.exists(savename):
+            os.makedirs(savename)
+        logger.info("Epoch end, Save medol...")
+        fluid.io.save_persistables(executor=exe, dirname=savename,
+                                main_program=main_program)
+        fluid.io.save_inference_model(savename, ['seq', 'dot'], [predictions], exe,
+                                    params_filename="per_model", model_filename="__model__")
 
 
 if __name__ == '__main__':
