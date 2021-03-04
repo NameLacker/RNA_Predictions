@@ -1,5 +1,6 @@
 import sys
 import time
+import numpy as np
 
 from utils import vocabulary
 from config import RNA_Config
@@ -61,3 +62,30 @@ def process_vocabulary(data, quiet=False):
         print_vocabulary("Sequence", seq_vocab)
         print_vocabulary("Brackets", bracket_vocab)
     return seq_vocab, bracket_vocab
+
+
+def operator_rmsd_avg(preds, labels):
+    all_rmsd = []
+    rmsd_avg = 0
+    for pred, label in zip(preds, labels):
+        count_pl = 0
+        for p, l in zip(pred, label):
+            minus = (p - l)**2
+            count_pl += minus
+        avg = count_pl / len(pred)
+        rmsd = np.sqrt(avg)
+        rmsd_avg += rmsd
+        all_rmsd.append(rmsd)
+    rmsd_avg /= len(preds)
+    rmsd_std = operator_rmsd_std(all_rmsd, rmsd_avg)
+    return rmsd_avg, rmsd_std
+
+
+def operator_rmsd_std(all_rmsd, rmsd_avg):
+    rmsd_std = 0
+    for rmsd in all_rmsd:
+        minus = (rmsd - rmsd_avg)**2
+        rmsd_std += minus
+    rmsd_std /= len(all_rmsd)
+    rmsd_std = np.sqrt(rmsd_std)
+    return rmsd_std

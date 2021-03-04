@@ -1,0 +1,10 @@
+2021-03-03 11:26:48,198 - train.py[line:149] - INFO: Epoch: 0, Step: 10, Loss: 0.47530231, Learning_rate: 0.001, Cost_time: 1.3626
+2021-03-03 11:26:49,393 - train.py[line:149] - INFO: Epoch: 0, Step: 20, Loss: 0.46492008, Learning_rate: 0.001, Cost_time: 1.1575
+2021-03-03 11:26:50,614 - train.py[line:149] - INFO: Epoch: 0, Step: 30, Loss: 0.45436215, Learning_rate: 0.001, Cost_time: 1.1851
+2021-03-03 11:26:51,546 - train.py[line:149] - INFO: Epoch: 0, Step: 40, Loss: 0.49131081, Learning_rate: 0.001, Cost_time: 0.89777
+2021-03-03 11:26:52,573 - train.py[line:149] - INFO: Epoch: 0, Step: 50, Loss: 0.46264532, Learning_rate: 0.001, Cost_time: 0.99475
+2021-03-03 11:26:53,753 - train.py[line:149] - INFO: Epoch: 0, Step: 60, Loss: 0.45581002, Learning_rate: 0.001, Cost_time: 1.1472
+2021-03-03 11:26:54,897 - train.py[line:149] - INFO: Epoch: 0, Step: 70, Loss: 0.45443523, Learning_rate: 0.001, Cost_time: 1.1129
+2021-03-03 11:26:56,401 - train.py[line:149] - INFO: Epoch: 0, Step: 80, Loss: 0.4636601, Learning_rate: 0.001, Cost_time: 1.4671
+2021-03-03 11:26:57,465 - train.py[line:149] - INFO: Epoch: 0, Step: 90, Loss: 0.4472914, Learning_rate: 0.001, Cost_time: 1.0306
+2021-03-03 11:26:58,559 - train.py[line:149] - INFO: Epoch: 0, Step: 100, Loss: 0.44326031, Learning_rate: 0.001, Cost_time: 1.0636

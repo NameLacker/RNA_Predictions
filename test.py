@@ -58,12 +58,12 @@ def run_test(args):
         pred = list(np.array(pred))
         test_results.append(pred)
         # 打印预测信息
-        print("Prediction RNA: {}\n"
+        print("{}\n"
               "RNA Sequence: {}\n"
               "RNA Structure: {}\n"
               "RNA Probability: {}\n"
               "RNA Length: {}\n"
-              .format(test_data[id]["id"].split()[1], test_data[id]["sequence"],
+              .format(test_data[id]["id"], test_data[id]["sequence"],
                       test_data[id]["structure"], pred, len(pred)))
     return test_results
 
@@ -84,7 +84,8 @@ def save_results(results):
         time.sleep(1)
     except Exception as e:
         pass
-
+    if not os.path.exists(collocations.result):
+        os.makedirs("./result/prediction")
     print("Start save results......")
     for id, result in enumerate(results):
         id += 1

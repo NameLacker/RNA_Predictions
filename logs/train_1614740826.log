@@ -1,0 +1,18 @@
+2021-03-03 11:07:07,572 - regularizer.py[line:101] - INFO: If regularizer of a Parameter has been set by 'fluid.ParamAttr' or 'fluid.WeightNormParamAttr' already. The Regularization[L2Decay, regularization_coeff=0.000050] in Optimizer will not take effect, and it will only be applied to other Parameters!
+2021-03-03 11:07:11,350 - train.py[line:149] - INFO: Epoch: 0, Step: 10, Loss: 0.49395826, Learning_rate: 0.001, Cost_time: 1.5828
+2021-03-03 11:07:12,835 - train.py[line:149] - INFO: Epoch: 0, Step: 20, Loss: 0.25334175, Learning_rate: 0.001, Cost_time: 1.4322
+2021-03-03 11:07:14,269 - train.py[line:149] - INFO: Epoch: 0, Step: 30, Loss: 0.21383951, Learning_rate: 0.001, Cost_time: 1.3838
+2021-03-03 11:07:15,878 - train.py[line:149] - INFO: Epoch: 0, Step: 40, Loss: 0.28772764, Learning_rate: 0.001, Cost_time: 1.559
+2021-03-03 11:07:17,326 - train.py[line:149] - INFO: Epoch: 0, Step: 50, Loss: 0.26189577, Learning_rate: 0.001, Cost_time: 1.3946
+2021-03-03 11:07:18,672 - train.py[line:149] - INFO: Epoch: 0, Step: 60, Loss: 0.21894753, Learning_rate: 0.001, Cost_time: 1.2938
+2021-03-03 11:07:20,135 - train.py[line:149] - INFO: Epoch: 0, Step: 70, Loss: 0.21340172, Learning_rate: 0.001, Cost_time: 1.4152
+2021-03-03 11:07:21,691 - train.py[line:149] - INFO: Epoch: 0, Step: 80, Loss: 0.21485701, Learning_rate: 0.001, Cost_time: 1.5087
+2021-03-03 11:07:22,992 - train.py[line:149] - INFO: Epoch: 0, Step: 90, Loss: 0.20235351, Learning_rate: 0.001, Cost_time: 1.2452
+2021-03-03 11:07:24,623 - train.py[line:149] - INFO: Epoch: 0, Step: 100, Loss: 0.2111414, Learning_rate: 0.001, Cost_time: 1.5763
+2021-03-03 11:07:26,332 - train.py[line:149] - INFO: Epoch: 0, Step: 110, Loss: 0.2069751, Learning_rate: 0.001, Cost_time: 1.6447
+2021-03-03 11:07:28,056 - train.py[line:149] - INFO: Epoch: 0, Step: 120, Loss: 0.21567733, Learning_rate: 0.001, Cost_time: 1.6703
+2021-03-03 11:07:29,358 - train.py[line:149] - INFO: Epoch: 0, Step: 130, Loss: 0.20673171, Learning_rate: 0.001, Cost_time: 1.2412
+2021-03-03 11:07:30,846 - train.py[line:149] - INFO: Epoch: 0, Step: 140, Loss: 0.21448137, Learning_rate: 0.001, Cost_time: 1.4391
+2021-03-03 11:07:32,327 - train.py[line:149] - INFO: Epoch: 0, Step: 150, Loss: 0.21425033, Learning_rate: 0.001, Cost_time: 1.4246
+2021-03-03 11:07:34,055 - train.py[line:149] - INFO: Epoch: 0, Step: 160, Loss: 0.21023102, Learning_rate: 0.001, Cost_time: 1.677
+2021-03-03 11:07:35,957 - train.py[line:149] - INFO: Epoch: 0, Step: 170, Loss: 0.21324714, Learning_rate: 0.001, Cost_time: 1.8413

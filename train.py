@@ -9,9 +9,9 @@ import numpy as np
 import paddle.fluid as fluid
 from visualdl import LogWriter
 
-from utils.process import process_vocabulary
+from utils.process import process_vocabulary, operator_rmsd_avg
 from utils.reader import load_train_data, reader_creator
-from utils import optimization
+from net import optimization
 from net.network import Network
 from config import RNA_Config
 
@@ -115,7 +115,6 @@ def train():
 
     avg_batch_loss = 0.  # 最小loss
     t = 0.
-    val_loss = 10000.
     for epoch_id in range(collocations.epochs):
         # ============================ 构造数据读取器 =============================
         train_reader = fluid.io.batch(
@@ -157,24 +156,35 @@ def train():
             # =============================== 验证程序 ===============================
             if train_iters % collocations.val_batch == 0:
                 val_results = []
+                preds = []
+                labels = []
                 for data in val_reader():
                     loss, pred = exe.run(test_program,
                                          feed=feeder.feed(data),
                                          fetch_list=[avg_loss.name, predictions.name],
                                          return_numpy=False)
                     loss = np.array(loss)
+                    pred = list(np.array(pred))
+                    label = list(data[0][2])
+
+                    preds.append(pred)
+                    labels.append(label)
                     val_results.append(loss[0])
+
+                rmsd_avg, rmsd_std = operator_rmsd_avg(preds, labels)  # 计算验证集平均RMSD
                 val_loss = sum(val_results) / len(val_results)
                 log_writer.add_scalar(tag='test/loss', step=train_iters, value=val_loss)
-                logger.info("Epoch: {}, Test Loss: {}".format(epoch_id, val_loss))
+                log_writer.add_scalar(tag='test/rmsd_avg', step=train_iters, value=rmsd_avg)
+                logger.info("Epoch: {}, Test Loss: {}, Test Rmsd_avg: {:.8}, Test Rmsd_std: {:.8}"
+                            .format(epoch_id, val_loss, rmsd_avg, rmsd_std))
 
                 # =============================== 保存模型参数 ===============================
-                if val_loss < collocations.best_dev_loss:
+                if (rmsd_avg < collocations.best_dev_rmsd and val_loss < collocations.best_dev_loss) or (step_id == 0 and epoch_id > 0):
                     savename = "{}".format(int(time.time()))
                     savename = os.path.join(collocations.save_dirname, savename)
                     if not os.path.exists(savename):
                         os.makedirs(savename)
-                    collocations.best_dev_loss = val_loss
+                    collocations.best_dev_rmsd = rmsd_avg
                     logger.info("Save medol...")
                     fluid.io.save_persistables(executor=exe, dirname=savename,
                                                main_program=main_program)

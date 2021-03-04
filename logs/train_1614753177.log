@@ -1,0 +1,3 @@
+2021-03-03 14:33:00,686 - train.py[line:112] - INFO: Loading model......
+2021-03-03 14:33:02,935 - train.py[line:148] - INFO: Epoch: 0, Step: 10, Loss: 0.10995579, Learning_rate: 0.00066000002, Cost_time: 1.8566
+2021-03-03 14:33:04,396 - train.py[line:148] - INFO: Epoch: 0, Step: 20, Loss: 0.058714397, Learning_rate: 0.00066000002, Cost_time: 1.3981

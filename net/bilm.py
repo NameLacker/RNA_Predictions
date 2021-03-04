@@ -124,8 +124,8 @@ def weight_layers(lm_embeddings):
     return weighted_lm_layers
 
 
-def dropout(input):
-    return fluid.layers.dropout(input, dropout_prob=dropout_rate, is_test=False)
+def dropout(input, name):
+    return fluid.layers.dropout(input, dropout_prob=dropout_rate, is_test=False, name=name)
 
 
 def bigru_layer(input_feature):

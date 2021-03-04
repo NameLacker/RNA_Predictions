@@ -1,0 +1,4 @@
+2021-03-03 12:11:28,644 - train.py[line:149] - INFO: Epoch: 0, Step: 10, Loss: 0.21752494, Learning_rate: 0.001, Cost_time: 1.5646
+2021-03-03 12:11:30,217 - train.py[line:149] - INFO: Epoch: 0, Step: 20, Loss: 0.20996075, Learning_rate: 0.001, Cost_time: 1.5101
+2021-03-03 12:11:32,065 - train.py[line:149] - INFO: Epoch: 0, Step: 30, Loss: 0.20728404, Learning_rate: 0.001, Cost_time: 1.7812
+2021-03-03 12:11:34,182 - train.py[line:149] - INFO: Epoch: 0, Step: 40, Loss: 0.21350982, Learning_rate: 0.001, Cost_time: 2.0548
