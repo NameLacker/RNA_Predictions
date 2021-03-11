@@ -75,8 +75,11 @@ def load_train_data():
     """
     assert os.path.exists(collocations.train_dataset)
     assert os.path.exists(collocations.train_dataset_other)
+    assert os.path.exists(collocations.train_dataset_reverse)
+    assert os.path.exists(collocations.train_dataset_exchange)
     assert os.path.exists(collocations.dev_dataset)
 
+    train = None
     if collocations.add == 0:
         print("Load original dataset...")
         train = read_data(collocations.train_dataset)
@@ -88,7 +91,18 @@ def load_train_data():
         train = read_data(collocations.train_dataset)
         train1 = read_data(collocations.train_dataset_other)
         train.extend(train1)
+    if collocations.add == 3:
+        print("Load reverse dataset...")
+        train = read_data(collocations.train_dataset_reverse)
+    if collocations.add == 4:
+        print("Load all dataset...")
+        train = read_data(collocations.train_dataset)
+        train1 = read_data(collocations.train_dataset_reverse)
+        train2 = read_data(collocations.train_dataset_exchange)
+        train.extend(train1)
+        train.extend(train2)
     dev = read_data(collocations.dev_dataset)
+    assert train is not None
     return train, dev
 
 

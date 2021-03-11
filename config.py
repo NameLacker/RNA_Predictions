@@ -16,7 +16,7 @@ class RNA_Config:
         self.best_dev_rmsd = 1.  # 保存模型参数所需最高RMSD_AVG
 
         self.use_gpu = True  # 是否使用gpu
-        self.add = 2  # 是否添加增广数据: 0--原数据, 1--预处理数据, 2--两者共用
+        self.add = 4  # 是否添加增广数据: 0--原数据, 1--预处理数据, 2--原、预处理共用, 3--反转数据, 4--全部数据
 
         self.continue_train = True  # TODO: 是否加载前一次训练参数
 
@@ -27,7 +27,7 @@ class RNA_Config:
         # ========================== 网络模型参数 ===========================
         self.dmodel = 256  # embedding数据维度 TODO: 最优配置 256
         self.layers = 6  # lstm层数 TODO: 最优配置 6
-        self.dropout = 0.05  # 模型参数丢弃概率
+        self.dropout = 0.3  # 模型参数丢弃概率
 
         # Elmo相关配置
         self.use_elmo = False  # 是否使用Elmo网络
@@ -42,6 +42,8 @@ class RNA_Config:
         # ========================== 数据文件保存 ============================
         self.train_dataset = "./data/train.txt"  # 训练文件
         self.train_dataset_other = "./data/other_train.txt"  # 增广的训练文件
+        self.train_dataset_reverse = "./data/rev_train.txt"  # 反转的数据
+        self.train_dataset_exchange = "./data/ex_train.txt"  # 同源序列
         self.dev_dataset = "./data/dev.txt"  # 验证文件
         self.test_dataset = "./data/test_nolabel.txt"  # 测试文件
 
@@ -50,9 +52,9 @@ class RNA_Config:
         self.result = "./result/prediction"  # 测试结果保存文件夹
         self.save_dirname = "./inference_model"  # 模型文件存放文件夹
 
-        self.params_dirname = "./inference_model"  # 模型文件加载文件夹
+        self.params_dirname = "./inference_model/"  # 模型文件加载文件夹
 
-        self.test_dirname = "./inference_model/1614649752"  # 测试所用模型参数存放路径
+        self.test_dirname = "./inference_model/1615429991"  # 测试所用模型参数存放路径
 
         # ======================== 学习率动态调整策略 =========================
         self.beta1 = 0.9  # 梯度下降所需参数1

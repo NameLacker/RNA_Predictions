@@ -34,7 +34,7 @@ def elmo_encoder(x_emb):
     for index in range(num_layers):
         embedding = fluid.layers.concat(
             input=[fw_hiddens_ori[index], bw_hiddens_ori[index]], axis=1)
-        embedding = dropout(embedding)
+        embedding = dropout(embedding, "dropout")
         concate_embeddings.append(embedding)
     weighted_emb = weight_layers(concate_embeddings)
     return weighted_emb
@@ -124,7 +124,7 @@ def weight_layers(lm_embeddings):
     return weighted_lm_layers
 
 
-def dropout(input, name):
+def dropout(input, name = None):
     return fluid.layers.dropout(input, dropout_prob=dropout_rate, is_test=False, name=name)
 
 

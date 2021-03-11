@@ -69,7 +69,7 @@ class Network(Layer):
                                      param_attr=self.initializer_w(), bias_attr=self.initializer_b())
         for _ in range(self.layers):
             emb = paddle.fluid.layers.fc(emb, size=self.model_size * 4,
-                                     param_attr=self.initializer_w(), bias_attr=self.initializer_b())
+                                         param_attr=self.initializer_w(), bias_attr=self.initializer_b())
             fwd, cell = paddle.fluid.layers.dynamic_lstm(input=emb, size=self.model_size * 4, use_peepholes=True,
                                                          is_reverse=False, param_attr=self.initializer_w(),
                                                          bias_attr=self.initializer_b())
@@ -78,8 +78,9 @@ class Network(Layer):
                                                           bias_attr=self.initializer_b())
             emb = paddle.fluid.layers.concat(input=[fwd, back], axis=1)
             emb = paddle.fluid.layers.fc(emb, size=self.model_size, act="relu",
-                                     param_attr=self.initializer_w(), bias_attr=self.initializer_b())
+                                         param_attr=self.initializer_w(), bias_attr=self.initializer_b())
+        emb = dropout(emb)
         ff_out = paddle.fluid.layers.fc(emb, size=2, act="relu",
-                                     param_attr=self.initializer_w(), bias_attr=self.initializer_b())
+                                        param_attr=self.initializer_w(), bias_attr=self.initializer_b())
         soft_out = paddle.fluid.layers.softmax(ff_out, axis=1)
         return soft_out[:, 0]

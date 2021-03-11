@@ -40,7 +40,35 @@ def init_log_config():
     logger.addHandler(fh)
 
 
-def train():
+def run_val(val_reader, exe, test_program, feeder, avg_loss, predictions, log_writer, train_iters, epoch_id):
+    val_results = []
+    preds = []
+    labels = []
+    for data in val_reader():
+        loss, pred = exe.run(test_program,
+                             feed=feeder.feed(data),
+                             fetch_list=[avg_loss.name, predictions.name],
+                             return_numpy=False)
+        loss = np.array(loss)
+        pred = list(np.array(pred))
+        label = list(data[0][2])
+
+        preds.append(pred)
+        labels.append(label)
+        val_results.append(loss[0])
+
+    rmsd_avg, rmsd_std = operator_rmsd_avg(preds, labels)  # 计算验证集平均RMSD
+    val_loss = sum(val_results) / len(val_results)
+    log_writer.add_scalar(tag='test/loss', step=train_iters, value=val_loss)
+    log_writer.add_scalar(tag='test/rmsd_avg', step=train_iters, value=rmsd_avg)
+    log_writer.add_scalar(tag='test/rmsd_std', step=train_iters, value=rmsd_std)
+    logger.info(
+        "Epoch: {}, Test Loss: {}, Test Rmsd_avg: {:.8}, Test Rmsd_std: {:.8}".format(epoch_id, val_loss,
+                                                                                      rmsd_avg, rmsd_std))
+    return rmsd_avg, val_loss
+
+
+def run_train():
     init_log_config()  # 初始化日志
 
     # =============================== 构造训练程序 =============================
@@ -65,7 +93,7 @@ def train():
     val_reader = fluid.io.batch(
         fluid.io.shuffle(
             reader_creator(val_data, seq_vocab, bracket_vocab), buf_size=collocations.buf_size),
-        batch_size=collocations.batch_size)
+        batch_size=collocations.test_size)
 
     # ============================ 构造数据容器和网络 ============================
     # 读取网络模型
@@ -145,7 +173,7 @@ def train():
                 log_writer.add_scalar(tag='train/loss', step=train_iters, value=float(batch_loss))
                 log_writer.add_scalar(tag='train/learning_rate', step=train_iters, value=float(learning_rate))
                 logger.info("Epoch: {}, Step: {}, Loss: {:.8}, Learning_rate: {:.8}, Cost_time: {:.5}".
-                            format(epoch_id, step_id+1, batch_loss, learning_rate, t))
+                            format(epoch_id, step_id + 1, batch_loss, learning_rate, t))
                 avg_batch_loss = 0.
                 t = 0.
 
@@ -155,28 +183,8 @@ def train():
 
             # =============================== 验证程序 ===============================
             if train_iters % collocations.val_batch == 0:
-                val_results = []
-                preds = []
-                labels = []
-                for data in val_reader():
-                    loss, pred = exe.run(test_program,
-                                         feed=feeder.feed(data),
-                                         fetch_list=[avg_loss.name, predictions.name],
-                                         return_numpy=False)
-                    loss = np.array(loss)
-                    pred = list(np.array(pred))
-                    label = list(data[0][2])
-
-                    preds.append(pred)
-                    labels.append(label)
-                    val_results.append(loss[0])
-
-                rmsd_avg, rmsd_std = operator_rmsd_avg(preds, labels)  # 计算验证集平均RMSD
-                val_loss = sum(val_results) / len(val_results)
-                log_writer.add_scalar(tag='test/loss', step=train_iters, value=val_loss)
-                log_writer.add_scalar(tag='test/rmsd_avg', step=train_iters, value=rmsd_avg)
-                log_writer.add_scalar(tag='test/rmsd_std', step=train_iters, value=rmsd_std)
-                logger.info("Epoch: {}, Test Loss: {}, Test Rmsd_avg: {:.8}, Test Rmsd_std: {:.8}".format(epoch_id, val_loss, rmsd_avg, rmsd_std))
+                rmsd_avg, val_loss = run_val(val_reader, exe, test_program, feeder, avg_loss,
+                                             predictions, log_writer, train_iters, epoch_id)
 
                 # =============================== 保存模型参数 ===============================
                 if rmsd_avg < collocations.best_dev_rmsd and val_loss < collocations.best_dev_loss:
@@ -191,16 +199,17 @@ def train():
                     fluid.io.save_inference_model(savename, ['seq', 'dot'], [predictions], exe,
                                                   params_filename="per_model", model_filename="__model__")
         # =============================== 一轮训练结束，保存模型参数 ===============================
+        run_val(val_reader, exe, test_program, feeder, avg_loss, predictions, log_writer, train_iters, epoch_id)
         savename = "end{}".format(int(time.time()))
         savename = os.path.join(collocations.save_dirname, savename)
         if not os.path.exists(savename):
             os.makedirs(savename)
         logger.info("Epoch end, Save medol...")
         fluid.io.save_persistables(executor=exe, dirname=savename,
-                                main_program=main_program)
+                                   main_program=main_program)
         fluid.io.save_inference_model(savename, ['seq', 'dot'], [predictions], exe,
-                                    params_filename="per_model", model_filename="__model__")
+                                      params_filename="per_model", model_filename="__model__")
 
 
 if __name__ == '__main__':
-    train()
+    run_train()
