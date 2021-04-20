@@ -1,6 +1,8 @@
 import os
 import numpy as np
+import random
 from config import RNA_Config
+from utils.utils import reverse, cross_over
 
 collocations = RNA_Config()
 
@@ -39,6 +41,7 @@ def read_data(filename, test=False):
                  "structure": dot,
                  "p_unpaired": punp,
                  }
+
             data.append(x)
             x = []
         else:
@@ -55,14 +58,25 @@ def reader_creator(data,
             dot = x["structure"]
             seq = [sequence_vocabulary.index(x) for x in list(seq)]
             dot = [bracket_vocabulary.index(x) for x in list(dot)]
-            sequence = np.array(seq)
-            structure = np.array(dot)
+
             if not test:
                 LP_v_unpaired_prob = x["p_unpaired"]
                 prob = [x for x in LP_v_unpaired_prob]
+
+                if random.random() > 0.66:  # 随机跳过
+                    continue
+                if random.random() > 0.5:  # 随机数据翻转
+                    seq, dot, prob = reverse(seq, dot, prob)
+                if random.random() > 0.5:  # 随机同源序列互换
+                    seq, dot, prob = cross_over(seq, dot, prob)
+
+                sequence = np.array(seq)
+                structure = np.array(dot)
                 LP_v_unpaired_prob = np.array(prob)
                 yield sequence, structure, LP_v_unpaired_prob
             else:
+                sequence = np.array(seq)
+                structure = np.array(dot)
                 yield sequence, structure
 
     return reader
@@ -93,16 +107,18 @@ def load_train_data():
         train.extend(train1)
     if collocations.add == 3:
         print("Load reverse dataset...")
-        train = read_data(collocations.train_dataset_reverse)
+        train = read_data(collocations.train_dataset_exchange)
     if collocations.add == 4:
         print("Load all dataset...")
         train = read_data(collocations.train_dataset)
         train1 = read_data(collocations.train_dataset_reverse)
-        train2 = read_data(collocations.train_dataset_exchange)
+        train2 = read_data(collocations.train_dataset_other)
+        # train2 = read_data(collocations.train_dataset_exchange)
         train.extend(train1)
         train.extend(train2)
     dev = read_data(collocations.dev_dataset)
     assert train is not None
+    assert dev is not None
     return train, dev
 
 

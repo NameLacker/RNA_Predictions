@@ -16,7 +16,7 @@ class RNA_Config:
         self.best_dev_rmsd = 1.  # 保存模型参数所需最高RMSD_AVG
 
         self.use_gpu = True  # 是否使用gpu
-        self.add = 4  # 是否添加增广数据: 0--原数据, 1--预处理数据, 2--原、预处理共用, 3--反转数据, 4--全部数据
+        self.add = 0  # 是否添加增广数据: 0--原数据, 1--预处理数据, 2--原、预处理共用, 3--反转数据, 4--全部数据
 
         self.continue_train = True  # TODO: 是否加载前一次训练参数
 
@@ -52,9 +52,9 @@ class RNA_Config:
         self.result = "./result/prediction"  # 测试结果保存文件夹
         self.save_dirname = "./inference_model"  # 模型文件存放文件夹
 
-        self.params_dirname = "./inference_model/"  # 模型文件加载文件夹
+        self.params_dirname = "./inference_model/1615876080"  # 模型文件加载文件夹
 
-        self.test_dirname = "./inference_model/1615429991"  # 测试所用模型参数存放路径
+        self.test_dirname = "./inference_model/1615971246"  # 测试所用模型参数存放路径
 
         # ======================== 学习率动态调整策略 =========================
         self.beta1 = 0.9  # 梯度下降所需参数1

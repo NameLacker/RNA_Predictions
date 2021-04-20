@@ -138,8 +138,12 @@ def run_train():
     # ========================== 是否加载上一次训练模型参数 =========================
     if collocations.continue_train:
         logger.info("Loading model......")
-        # 加载上一次训练模型参数
-        fluid.io.load_persistables(executor=exe, dirname=params_dirname, main_program=main_program, filename="persistables")
+        if "persistables" in os.listdir(params_dirname):
+            # 加载上一次训练模型参数
+            fluid.io.load_persistables(executor=exe, dirname=params_dirname, main_program=main_program,
+                                       filename="persistables")
+        else:
+            fluid.io.load_persistables(executor=exe, dirname=params_dirname, main_program=main_program)
 
     avg_batch_loss = 0.  # 最小loss
     t = 0.
