@@ -8,7 +8,7 @@ import paddle.fluid as fluid
 from config import RNA_Config
 from net.network import Network
 from utils.process import process_vocabulary
-from utils.reader import load_train_data, load_test_data, reader_creator
+from utils.reader import load_train_data, load_test_data, reader_creator, load_test_B
 
 collocations = RNA_Config()
 
@@ -22,7 +22,8 @@ def run_test(args):
     place = fluid.CUDAPlace(0) if args.use_gpu else fluid.CPUPlace()
     print("Loading data...")
     train_data, val_data = load_train_data()
-    test_data = load_test_data()
+    # test_data = load_test_data()
+    test_data = load_test_B()  # todo: B榜测试数据
 
     print("Loading model...")
     seq_vocab, bracket_vocab = process_vocabulary(train_data, quiet=True)

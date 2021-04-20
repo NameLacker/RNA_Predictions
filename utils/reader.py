@@ -132,12 +132,12 @@ def load_test_data():
     return test
 
 
-def load_test_label_data():
+def load_test_B():
     """
     由于比赛的公开数据不提供测试集的标签，故本模型无法运行预设的test_withlabel，
     需自己生成一个带标签的测试集~/data/test.txt
     :return:
     """
-    assert os.path.exists(collocations.test)
-    test = read_data(collocations.test)
+    assert os.path.exists(collocations.test_B)
+    test = read_data(collocations.test_B, test=True)
     return test

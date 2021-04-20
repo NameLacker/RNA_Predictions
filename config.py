@@ -46,6 +46,7 @@ class RNA_Config:
         self.train_dataset_exchange = "./data/ex_train.txt"  # 同源序列
         self.dev_dataset = "./data/dev.txt"  # 验证文件
         self.test_dataset = "./data/test_nolabel.txt"  # 测试文件
+        self.test_B = "./data/B_board_112_seqs.txt"  # todo: B榜测试数据
 
         self.test = "./data/test.txt"  # 自己生成的带标签测试集
         self.train_log = "./log/train"  # visualdl格式log保存路径
