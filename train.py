@@ -17,7 +17,7 @@ from config import RNA_Config
 
 collocations = RNA_Config()
 
-logger = None
+logger = logging.getLogger()
 
 
 def init_log_config():
@@ -202,18 +202,46 @@ def run_train():
                                                main_program=main_program)
                     fluid.io.save_inference_model(savename, ['seq', 'dot'], [predictions], exe,
                                                   params_filename="per_model", model_filename="__model__")
-        # =============================== 一轮训练结束，保存模型参数 ===============================
-        run_val(val_reader, exe, test_program, feeder, avg_loss, predictions, log_writer, train_iters, epoch_id)
-        savename = "end{}".format(int(time.time()))
-        savename = os.path.join(collocations.save_dirname, savename)
-        if not os.path.exists(savename):
-            os.makedirs(savename)
-        logger.info("Epoch end, Save medol...")
-        fluid.io.save_persistables(executor=exe, dirname=savename,
-                                   main_program=main_program)
-        fluid.io.save_inference_model(savename, ['seq', 'dot'], [predictions], exe,
-                                      params_filename="per_model", model_filename="__model__")
+
+
+def freeze_model(path, save_dir):
+    """
+    固化模型参数
+    :param path:
+    :param save_dir:
+    :return:
+    """
+    # 设置训练环境
+    place = fluid.CUDAPlace(0) if collocations.use_gpu else fluid.CPUPlace()
+    exe = fluid.Executor(place)
+    # 读取数据
+    train_data, val_data = load_train_data()
+    # 构建数据字典
+    seq_vocab, bracket_vocab = process_vocabulary(train_data)
+    # 读取网络模型
+    network = Network(
+        seq_vocab,
+        bracket_vocab,
+        dmodel=collocations.dmodel,
+        layers=collocations.layers,
+        dropout=collocations.dropout,
+    )
+    # 构建数据容器
+    seq = fluid.data(name="seq", shape=[None], dtype="int64", lod_level=1)
+    dot = fluid.data(name="dot", shape=[None], dtype="int64", lod_level=1)
+    # 前向传播
+    predictions = network(seq, dot)
+
+    freeze_program = fluid.default_main_program()
+    fluid.io.load_persistables(exe, path, freeze_program)
+    freeze_program = freeze_program.clone(for_test=True)
+
+    fluid.io.save_inference_model(save_dir, ["seq", "dot"], predictions, exe, freeze_program,
+                                  model_filename="__model__", params_filename="pre_model")
+    print("freeze out: {0}, pred layout: {1}".format(collocations.freeze_dirname, predictions))
+    print("固化模型成功!!!")
 
 
 if __name__ == '__main__':
     run_train()
+    # freeze_model("inference_model/1620610240", "freeze_model/")

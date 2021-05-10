@@ -111,31 +111,27 @@ def load_train_data():
     if collocations.add == 4:
         print("Load all dataset...")
         train = read_data(collocations.train_dataset)
-        train1 = read_data(collocations.train_dataset_reverse)
-        train2 = read_data(collocations.train_dataset_other)
-        # train2 = read_data(collocations.train_dataset_exchange)
+        train1 = read_data(collocations.train_dataset_exchange)
         train.extend(train1)
-        train.extend(train2)
     dev = read_data(collocations.dev_dataset)
     assert train is not None
     assert dev is not None
     return train, dev
 
 
-def load_test_data():
+def load_test_A():
     """
-    不带标签的测试数据读取器
+    读取A榜测试数据
     :return:
     """
-    assert os.path.exists(collocations.test_dataset)
-    test = read_data(collocations.test_dataset, test=True)
+    assert os.path.exists(collocations.test_A)
+    test = read_data(collocations.test_A, test=True)
     return test
 
 
 def load_test_B():
     """
-    由于比赛的公开数据不提供测试集的标签，故本模型无法运行预设的test_withlabel，
-    需自己生成一个带标签的测试集~/data/test.txt
+    读取B榜测试数据
     :return:
     """
     assert os.path.exists(collocations.test_B)

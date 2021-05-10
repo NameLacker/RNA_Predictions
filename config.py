@@ -11,12 +11,12 @@ class RNA_Config:
         self.batch_size = 1  # 批大小
         self.test_size = 1  # 测试的批大小
         self.epochs = 50  # 一共训练多少个轮次
-        self.val_batch = 4750 // (self.batch_size * 10)  # 多少个batch做一次验证
+        self.val_batch = 4750 // (self.batch_size * 4)  # 多少个batch做一次验证
         self.best_dev_loss = 0.08  # 保存模型参数所需最高损失
         self.best_dev_rmsd = 1.  # 保存模型参数所需最高RMSD_AVG
 
         self.use_gpu = True  # 是否使用gpu
-        self.add = 0  # 是否添加增广数据: 0--原数据, 1--预处理数据, 2--原、预处理共用, 3--反转数据, 4--全部数据
+        self.add = 4  # 是否添加增广数据: 0--原数据, 1--预处理数据, 2--原、预处理共用, 3--反转数据, 4--全部数据
 
         self.continue_train = True  # TODO: 是否加载前一次训练参数
 
@@ -45,7 +45,7 @@ class RNA_Config:
         self.train_dataset_reverse = "./data/rev_train.txt"  # 反转的数据
         self.train_dataset_exchange = "./data/ex_train.txt"  # 同源序列
         self.dev_dataset = "./data/dev.txt"  # 验证文件
-        self.test_dataset = "./data/test_nolabel.txt"  # 测试文件
+        self.test_A = "./data/test_nolabel.txt"  # 测试文件
         self.test_B = "./data/B_board_112_seqs.txt"  # todo: B榜测试数据
 
         self.test = "./data/test.txt"  # 自己生成的带标签测试集
@@ -53,16 +53,16 @@ class RNA_Config:
         self.result = "./result/prediction"  # 测试结果保存文件夹
         self.save_dirname = "./inference_model"  # 模型文件存放文件夹
 
-        self.params_dirname = "./inference_model/1615876080"  # 模型文件加载文件夹
+        self.params_dirname = "./max_models/3.711B"  # 模型文件加载文件夹
 
-        self.test_dirname = "./inference_model/1615971246"  # 测试所用模型参数存放路径
+        self.freeze_dirname = "./freeze_model/"  # 测试所用模型参数存放路径
 
         # ======================== 学习率动态调整策略 =========================
         self.beta1 = 0.9  # 梯度下降所需参数1
         self.beta2 = 0.999  # 梯度下降所需参数2
         self.epsilon = 1e-08  # 梯度下降所需参数3
 
-        self.learn_rate = 0.001  # 初始学习率
+        self.learn_rate = 0.0001  # 初始学习率
         self.each_step = 4750 // self.batch_size  # 每隔多少步调整学习率
         self.boundaries = [1, 3, 5, 8, 10, 13, 15, 17, 19, 22]  # 经过多少个epoch降低学习率
         self.values = [1., 0.66, 0.33, 0.1, 0.066, 0.033, 0.01, 0.005, 0.001, 0.0001, 0.00001]  # 不同阶段学习率

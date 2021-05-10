@@ -1,0 +1,14 @@
+data
+log
+logs
+result/
+
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+
+~$*

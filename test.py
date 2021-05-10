@@ -6,11 +6,15 @@ import time
 import paddle.fluid as fluid
 
 from config import RNA_Config
-from net.network import Network
 from utils.process import process_vocabulary
-from utils.reader import load_train_data, load_test_data, reader_creator, load_test_B
+from utils.reader import load_train_data, reader_creator, load_test_A, load_test_B
 
 collocations = RNA_Config()
+place = fluid.CUDAPlace(0) if collocations.use_gpu else fluid.CPUPlace()
+exe = fluid.Executor(place)
+# 读取固化模型参数
+[inference_program, feed_target_names, fetch_targets] = fluid.io.load_inference_model(
+    dirname=collocations.freeze_dirname, executor=exe, params_filename="pre_model")
 
 
 def run_test(args):
@@ -19,43 +23,29 @@ def run_test(args):
     :param args:
     :return:
     """
-    place = fluid.CUDAPlace(0) if args.use_gpu else fluid.CPUPlace()
     print("Loading data...")
     train_data, val_data = load_train_data()
-    # test_data = load_test_data()
+    # test_data = load_test_A()
     test_data = load_test_B()  # todo: B榜测试数据
 
     print("Loading model...")
     seq_vocab, bracket_vocab = process_vocabulary(train_data, quiet=True)
-    network = Network(
-        seq_vocab,
-        bracket_vocab,
-        dmodel=args.dmodel,
-        layers=args.layers,
-        dropout=0,
-    )
 
-    exe = fluid.Executor(place)
-    fluid.io.load_inference_model(args.test_dirname, exe, params_filename="per_model")
     test_reader = fluid.io.batch(
         reader_creator(test_data, seq_vocab, bracket_vocab, test=True),
         batch_size=args.test_size)
 
     seq = fluid.data(name="seq", shape=[None], dtype="int64", lod_level=1)
     dot = fluid.data(name="dot", shape=[None], dtype="int64", lod_level=1)
-    predictions = network(seq, dot)
 
-    main_program = fluid.default_main_program()
-    test_program = main_program.clone(for_test=True)
     test_feeder = fluid.DataFeeder(place=place, feed_list=[seq, dot])
 
     test_results = []
     for id, data in enumerate(test_reader()):
-        pred, = exe.run(test_program,
+        pred, = exe.run(inference_program,
                         feed=test_feeder.feed(data),
-                        fetch_list=[predictions.name],
-                        return_numpy=False
-                        )
+                        fetch_list=fetch_targets,
+                        return_numpy=False)
         pred = list(np.array(pred))
         test_results.append(pred)
         # 打印预测信息
