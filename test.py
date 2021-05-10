@@ -10,8 +10,12 @@ from utils.process import process_vocabulary
 from utils.reader import load_train_data, reader_creator, load_test_A, load_test_B
 
 collocations = RNA_Config()
+
 place = fluid.CUDAPlace(0) if collocations.use_gpu else fluid.CPUPlace()
 exe = fluid.Executor(place)
+
+assert len(os.listdir(collocations.freeze_dirname)) > 0, "请先执行固化程序"
+
 # 读取固化模型参数
 [inference_program, feed_target_names, fetch_targets] = fluid.io.load_inference_model(
     dirname=collocations.freeze_dirname, executor=exe, params_filename="pre_model")

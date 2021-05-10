@@ -10,7 +10,7 @@ class RNA_Config:
         self.buf_size = 2000  # 缓冲区保存的数据个数
         self.batch_size = 1  # 批大小
         self.test_size = 1  # 测试的批大小
-        self.epochs = 50  # 一共训练多少个轮次
+        self.epochs = 20  # 一共训练多少个轮次
         self.val_batch = 4750 // (self.batch_size * 4)  # 多少个batch做一次验证
         self.best_dev_loss = 0.08  # 保存模型参数所需最高损失
         self.best_dev_rmsd = 1.  # 保存模型参数所需最高RMSD_AVG

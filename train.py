@@ -243,5 +243,5 @@ def freeze_model(path, save_dir):
 
 
 if __name__ == '__main__':
-    run_train()
-    # freeze_model("inference_model/1620610240", "freeze_model/")
+    # run_train()
+    freeze_model("inference_model/3.713", "freeze_model/")
