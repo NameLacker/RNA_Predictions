@@ -147,6 +147,7 @@ def run_train():
 
     avg_batch_loss = 0.  # 最小loss
     t = 0.
+    early_stop = 0
     for epoch_id in range(collocations.epochs):
         # ============================ 构造数据读取器 =============================
         train_reader = fluid.io.batch(
@@ -192,6 +193,7 @@ def run_train():
 
                 # =============================== 保存模型参数 ===============================
                 if rmsd_avg < collocations.best_dev_rmsd and val_loss < collocations.best_dev_loss:
+                    early_stop = 0
                     savename = "{}".format(int(time.time()))
                     savename = os.path.join(collocations.save_dirname, savename)
                     if not os.path.exists(savename):
@@ -200,8 +202,11 @@ def run_train():
                     logger.info("Save medol...")
                     fluid.io.save_persistables(executor=exe, dirname=savename,
                                                main_program=main_program)
-                    fluid.io.save_inference_model(savename, ['seq', 'dot'], [predictions], exe,
-                                                  params_filename="per_model", model_filename="__model__")
+                else:
+                    early_stop += 1
+            if early_stop == 3:
+                logger.info("提前停止训练！！！")
+                return 0
 
 
 def freeze_model(path, save_dir):
@@ -243,5 +248,5 @@ def freeze_model(path, save_dir):
 
 
 if __name__ == '__main__':
-    # run_train()
-    freeze_model("inference_model/3.713", "freeze_model/")
+    run_train()
+    # freeze_model("inference_model/", "freeze_model/")

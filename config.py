@@ -53,7 +53,7 @@ class RNA_Config:
         self.result = "./result/prediction"  # 测试结果保存文件夹
         self.save_dirname = "./inference_model"  # 模型文件存放文件夹
 
-        self.params_dirname = "./max_models/3.711B"  # 模型文件加载文件夹
+        self.params_dirname = "./max_models/3.713B"  # 模型文件加载文件夹
 
         self.freeze_dirname = "./freeze_model/"  # 测试所用模型参数存放路径
 
