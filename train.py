@@ -212,7 +212,7 @@ def run_train():
 def freeze_model(path, save_dir):
     """
     固化模型参数
-    :param path:
+    :param path: 训练
     :param save_dir:
     :return:
     """
@@ -249,4 +249,4 @@ def freeze_model(path, save_dir):
 
 if __name__ == '__main__':
     # run_train()
-    freeze_model("inference_model/1620628111", "freeze_model/")
+    freeze_model("max_models/3.739B", "freeze_model/")

@@ -1,9 +1,0 @@
-2021-03-03 11:06:21,426 - regularizer.py[line:101] - INFO: If regularizer of a Parameter has been set by 'fluid.ParamAttr' or 'fluid.WeightNormParamAttr' already. The Regularization[L2Decay, regularization_coeff=0.000050] in Optimizer will not take effect, and it will only be applied to other Parameters!
-2021-03-03 11:06:27,981 - train.py[line:149] - INFO: Epoch: 0, Step: 10, Loss: 0.47033332, Learning_rate: 0.001, Cost_time: 4.3207
-2021-03-03 11:06:32,368 - train.py[line:149] - INFO: Epoch: 0, Step: 20, Loss: 0.21468938, Learning_rate: 0.001, Cost_time: 4.2175
-2021-03-03 11:06:36,286 - train.py[line:149] - INFO: Epoch: 0, Step: 30, Loss: 0.21472909, Learning_rate: 0.001, Cost_time: 3.747
-2021-03-03 11:06:40,319 - train.py[line:149] - INFO: Epoch: 0, Step: 40, Loss: 0.52310416, Learning_rate: 0.001, Cost_time: 3.8739
-2021-03-03 11:06:43,957 - train.py[line:149] - INFO: Epoch: 0, Step: 50, Loss: 0.41270573, Learning_rate: 0.001, Cost_time: 3.4545
-2021-03-03 11:06:47,607 - train.py[line:149] - INFO: Epoch: 0, Step: 60, Loss: 0.21468934, Learning_rate: 0.001, Cost_time: 3.4503
-2021-03-03 11:06:52,162 - train.py[line:149] - INFO: Epoch: 0, Step: 70, Loss: 0.21067119, Learning_rate: 0.001, Cost_time: 4.3852
-2021-03-03 11:06:56,511 - train.py[line:149] - INFO: Epoch: 0, Step: 80, Loss: 0.21220123, Learning_rate: 0.001, Cost_time: 4.1884
