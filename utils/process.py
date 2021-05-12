@@ -65,6 +65,12 @@ def process_vocabulary(data, quiet=False):
 
 
 def operator_rmsd_avg(preds, labels):
+    """
+    计算预测的RMSD_AVG和RMSD_STD
+    :param preds:
+    :param labels:
+    :return:
+    """
     all_rmsd = []
     rmsd_avg = 0
     for pred, label in zip(preds, labels):
@@ -82,6 +88,12 @@ def operator_rmsd_avg(preds, labels):
 
 
 def operator_rmsd_std(all_rmsd, rmsd_avg):
+    """
+    计算RMSD_STD
+    :param all_rmsd:
+    :param rmsd_avg:
+    :return:
+    """
     rmsd_std = 0
     for rmsd in all_rmsd:
         minus = (rmsd - rmsd_avg)**2

@@ -3,9 +3,11 @@ import numpy as np
 import os
 import zipfile
 import time
+import argparse
 import paddle.fluid as fluid
 
 from config import RNA_Config
+from net.network import Network
 from utils.process import process_vocabulary
 from utils.reader import load_train_data, reader_creator, load_test_A, load_test_B
 
@@ -107,11 +109,58 @@ def writeAllFileToZip(absDir, zipFile):
         zipFile.write(absFile)  # 逐文件压缩
 
 
+def freeze_model(path, save_dir):
+    """
+    固化模型参数
+    :param path: 训练模型参数
+    :param save_dir: 固化模型存放目录
+    :return:
+    """
+    # 设置训练环境
+    place = fluid.CUDAPlace(0) if collocations.use_gpu else fluid.CPUPlace()
+    exe = fluid.Executor(place)
+    # 读取数据
+    train_data, val_data = load_train_data()
+    # 构建数据字典
+    seq_vocab, bracket_vocab = process_vocabulary(train_data)
+    # 读取网络模型
+    network = Network(
+        seq_vocab,
+        bracket_vocab,
+        dmodel=collocations.dmodel,
+        layers=collocations.layers,
+        dropout=collocations.dropout,
+    )
+    # 构建数据容器
+    seq = fluid.data(name="seq", shape=[None], dtype="int64", lod_level=1)
+    dot = fluid.data(name="dot", shape=[None], dtype="int64", lod_level=1)
+    # 前向传播
+    predictions = network(seq, dot)
+
+    freeze_program = fluid.default_main_program()
+    fluid.io.load_persistables(exe, path, freeze_program)
+    freeze_program = freeze_program.clone(for_test=True)
+
+    fluid.io.save_inference_model(save_dir, ["seq", "dot"], predictions, exe, freeze_program,
+                                  model_filename="__model__", params_filename="pre_model")
+    print("freeze out: {0}, pred layout: {1}".format(collocations.freeze_dirname, predictions))
+    print("固化模型成功!!!")
+
+
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='manual to this script')
+    parser.add_argument('--param_path', type=str, default="./max_models/3.739B")
+    path = parser.parse_args().param_path
+    # 固化模型
+    print("读取参数：{}".format(path))
+    freeze_model(path, "freeze_model/")
+
+    time.sleep(3)
+    # 开始预测
     collocations = RNA_Config()  # 获取配置信息
-    results = run_test(collocations)
-    save_results(results)
+    results = run_test(collocations)  # 预测产生结果
+    save_results(results)  # 保存结果
     print("Zip result...")
-    time.sleep(5)
-    writeAllFileToZip("./result", "predict.files.zip")
+    time.sleep(3)
+    writeAllFileToZip("./result", "predict.files.zip")  # 压缩结果进`predict.files.zip`文件
     print("Success zip result!")

@@ -17,15 +17,20 @@
 │   └── train.txt              &#8195;             // 训练数据集文件  
 ├── demo.py            &#8195;      // 演示脚本  
 ├── inference_model  
-│   ├── __model__      &#8195;      // 模型结构图（visualdl打开）  
-│   ├── per_model      &#8195;     // 预测模型参数  
-│   └── persistables   &#8195;     // 训练模型参数  
+│   │   ├──&#8195;  ...  
+│   │   ├──&#8195;  ...  
+│   │   ├──&#8195;  ...   
+│   └── ├──&#8195;  ...    &#8195;     // 训练模型参数  
 ├── logs  
 │   └── train_1612239291.log       &#8195;         // 日志文件  
-├── max_models         &#8195;    // 最优模型存放目录   
+├── max_models         &#8195;    // 最优模型存放目录  
+│   │   ├──&#8195;  ...  
+│   │   ├──&#8195;  ...  
+│   │   ├──&#8195;  ...   
 │   └── 4.635          &#8195;         // 最优模型  
 ├── net  
 │   ├── network.py          &#8195;     // 网络模型代码  
+│   └── bilm.py             &#8195;     // Elmo结构  
 ├── README.md               &#8195;     // 项目说明  
 ├── requestments.txt        &#8195;     // 配置库  
 ├── result  
@@ -41,6 +46,7 @@
 └── utils  
     ├── process.py          &#8195;     // 创建词汇表  
     ├── reader.py           &#8195;     // 数据读入程序  
+    ├── utils.py            &#8195;     // 数据预处理  
     └── vocabulary.py       &#8195;     // 数据格式化类  
 ├── test.py                 &#8195;     // 验证程序  
 ├── train.py                &#8195;     // 训练程序  
@@ -51,7 +57,7 @@
 * 运行`pip install -r requestments -i https://pypi.douban.com/simple`下载安装所需依赖  
 * 运行`python train.py`开始训练，训练参数会保存在`./inference_model`目录下  
 * 运行`visualdl --logdir ./log post 8040`，再在浏览器打开`http://localhost:8040/`可以查看训练进度  
-* 运行`python test.py`产生测试结果，测试结果保存在`./result`目录下，同时生成`predict.files.zip`作为提交文件  
+* 运行`python test.py`产生测试结果（可设置读取模型的目录参数`--param_path=参数目录`，各个模型参数全在`./max_models`目录下，也可以读取`./inference`下的模型参数，如不设置此参数，则默认值为`./max_models/3.739B`），测试结果保存在`./result/prediction`目录下，同时在`./result`目录下生成`predict.files.zip`作为提交文件  
 
 ## 模型
 ***
@@ -71,6 +77,7 @@
 
 ## 不同参数下的验证结果
 ***
+* A榜：  
 <table align="center">
     <thead>
         <tr>
@@ -175,6 +182,11 @@
 </table>
 
 
-## 当前模型结构
+## 模型训练过程综述
 ***  
-![model](https://gitee.com/nameLacker/RNA_Prediction/blob/master/result/__model__.svg)
+* 在模型上的深度改进上，发现在Baseline基线模型上增加LSTM层数会导致损失剧增，所以选择减小模型参数，经过大量的实验，发现当`LSTM layers=6`时在A榜可达到最佳评分。  
+* 在模型输入尺寸上，增大或减小`embedding`的数据维度也会导致损失的变化，当其为`256`时亦可使得A榜测试达到最佳。
+* 在`embedding`模型上的改进，我们试着引进`Elem`、`GRU`网络结构，在实际训练中，损失最终会稳定在和未添此trip大致一样的数值，但当提交此模型产生的预测结果到A榜后会导致分数骤降，所以在之后的训练实验中未采取此trip。　　
+* 在数据的预处理中，我们试着用官方工具`PaddleHelix`针对数据集的碱基序列产生新的二级结构，此trip帮助我们在A榜上取得了最佳的成绩，但在B榜上的表现并不如人意，之后我们又采用同源序列的方法对数据集预处理，此trip使得我们在B榜上取得了最佳的成绩。　　
+* 模型超参数的改进，`learning_rate`采取阶梯下降的方式，优化方法试过几乎全部的优化器，还是`Baseline`的优化器取得的成绩最高。增大训练的`Batch size`也没有很好的表现。
+* 此外，由于官方不提供`RMSD_STD`的计算方案，所以我们在对A榜的所有提交数据的分析下，自创了`RMST_STD`的计算方案，并应用于训练时的验证上。
